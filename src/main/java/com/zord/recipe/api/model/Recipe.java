@@ -4,29 +4,37 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import org.bson.types.ObjectId;
+
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
+
 public class Recipe {
 
-	private String id;
+	@JsonSerialize(using = ToStringSerializer.class)
+	private ObjectId id;
 	private String title;
 	private String description;
-	
-	private List<Integer> likes = new ArrayList<>();
 	private List<String> ingredients = new ArrayList<>();
+	private List<Integer> likes = new ArrayList<>();
 	private List<Comment> comments = new ArrayList<>();
 	
-	public Recipe(String title, String description, List<Integer> likes, List<String> ingredients) {
+	public Recipe() {
+	}
+	
+	public Recipe(String title, String description, List<String> ingredients, List<Integer> likes) {
 		this.title = title;
 		this.description = description;
 		this.likes = likes;
 		this.ingredients = ingredients;
 	}
 
-	public String getId() {
+	public ObjectId getId() {
 		return id;
 	}
 
-	public void setId(String id) {
-		this.id = id;
+	public void setId(ObjectId objectId) {
+		this.id = objectId;
 	}
 
 	public String getTitle() {
@@ -51,6 +59,10 @@ public class Recipe {
 
 	public List<String> getIngredients() {
 		return ingredients;
+	}
+	
+	public void setIngredients(List<String> ingredients) {
+		this.ingredients = ingredients;
 	}
 	
 	public List<Comment> getComments() {

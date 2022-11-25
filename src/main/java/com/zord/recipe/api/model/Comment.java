@@ -2,21 +2,31 @@ package com.zord.recipe.api.model;
 
 import java.util.Objects;
 
+import org.bson.types.ObjectId;
+
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
+
 public class Comment {
 
-	private String id;
+	@JsonSerialize(using = ToStringSerializer.class)
+	
+	private ObjectId id;
 	private String comment;
+	
+	public Comment() {
+	}
 	
 	public Comment(String comment) {
 		this.comment = comment;
 	}
 	
-	public String getId() {
+	public ObjectId getId() {
 		return id;
 	}
 	
-	public void setId(String id) {
-		this.id = id;
+	public void setId(ObjectId objectId) {
+		this.id = objectId;
 	}
 	
 	public String getComment() {

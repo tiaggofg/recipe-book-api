@@ -1,7 +1,5 @@
 package com.zord.recipe.api.controllers;
 
-import org.bson.types.ObjectId;
-
 import com.zord.recipe.api.model.Recipe;
 import com.zord.recipe.api.services.RecipeService;
 
@@ -22,8 +20,20 @@ public class RecipeControllerImpl implements RecipeController {
 
 	@Override
 	public void getById(Context ctx) {
-		var id = new ObjectId(ctx.pathParamAsClass("id", String.class).get());
+		var id = ctx.pathParam("id");
 		ctx.json(recipeService.findById(id));
+	}
+	
+	@Override
+	public void getByIngredient(Context ctx) {
+		 var ingredient = ctx.queryParamMap().values().stream().findAny().get().get(0);
+		 ctx.json(recipeService.findByIngredient(ingredient));
+	}
+	
+	@Override
+	public void getBySearch(Context ctx) {
+		var search = ctx.queryParamMap().values().stream().findAny().get().get(0);
+		ctx.json(recipeService.searchInTitleAndDescription(search));
 	}
 
 	@Override
@@ -36,14 +46,28 @@ public class RecipeControllerImpl implements RecipeController {
 	@Override
 	public void put(Context ctx) {
 		var recipe = ctx.bodyAsClass(Recipe.class);
-		var id = new ObjectId(ctx.pathParamAsClass("id", String.class).get());
+		var id = ctx.pathParam("id");
 		recipeService.update(id, recipe);
 	}
 
 	@Override
 	public void delete(Context ctx) {
-		var id = new ObjectId(ctx.pathParamAsClass("id", String.class).get());
+		var id = ctx.pathParam("id");
 		recipeService.delete(id);
+	}
+	
+	@Override
+	public void postLike(Context ctx) {
+		var userId = Integer.parseInt(ctx.pathParam("userId"));
+		var recipeId = ctx.pathParam("id");
+		ctx.json(recipeService.addLike(userId, recipeId));
+	}
+	
+	@Override
+	public void deleteLike(Context ctx) {
+		var userId = Integer.parseInt(ctx.pathParam("userId"));
+		var recipeId = ctx.pathParam("id");
+		recipeService.removeLike(userId, recipeId);
 	}
 
 }

@@ -16,23 +16,23 @@ import com.mongodb.client.MongoClients;
 
 public class Config {
 
-	private int applicationPort = 8080;
-	private int mongoPort = 27017;
-	private String mongoHost = "localhost";
-	private String dbName = "recipe";
+	private static int applicationPort = 8080;
+	private static int mongoPort = 27017;
+	private static String mongoHost = "localhost";
+	private static String collection = "recipe";
 
 	public Config() {
 	}
 
-	public int getApplicationPort() {
+	public static int getApplicationPort() {
 		return applicationPort;
 	}
 
-	public String getDbName() {
-		return dbName;
+	public static String getCollection() {
+		return collection;
 	}
 
-	public MongoClient getMongoClient() {
+	public static MongoClient getMongoClient() {
 		CodecProvider pojoCodecProvider = PojoCodecProvider.builder().automatic(true).build();
 		CodecRegistry pojoCodecRegistry = fromRegistries(MongoClientSettings.getDefaultCodecRegistry(),
 				fromProviders(pojoCodecProvider));

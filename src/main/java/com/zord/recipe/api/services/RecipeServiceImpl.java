@@ -2,8 +2,6 @@ package com.zord.recipe.api.services;
 
 import java.util.List;
 
-import org.bson.types.ObjectId;
-
 import com.zord.recipe.api.model.Recipe;
 import com.zord.recipe.api.repositories.RecipeRepository;
 
@@ -21,13 +19,23 @@ public class RecipeServiceImpl implements RecipeService {
 	}
 	
 	@Override
-	public Recipe update(ObjectId id, Recipe recipe) {
+	public Recipe update(String id, Recipe recipe) {
 		return recipeRepository.update(id, recipe);
 	}
 
 	@Override
-	public Recipe findById(ObjectId id) {
+	public Recipe findById(String id) {
 		return recipeRepository.findById(id);
+	}
+	
+	@Override
+	public List<Recipe> findByIngredient(String ingredient) {
+		return recipeRepository.findByIngredient(ingredient);
+	}
+	
+	@Override
+	public List<Recipe> searchInTitleAndDescription(String search) {
+		return recipeRepository.searchInTitleAndDescription(search);
 	}
 
 	@Override
@@ -36,8 +44,18 @@ public class RecipeServiceImpl implements RecipeService {
 	}
 
 	@Override
-	public void delete(ObjectId id) {
+	public void delete(String id) {
 		recipeRepository.delete(id);
 	}
+	
+	@Override
+	public Recipe addLike(Integer userId, String recipeId) {
+		return recipeRepository.addLike(userId, recipeId);
+	}
 
+	@Override
+	public void removeLike(Integer userId, String recipeId) {
+		recipeRepository.removeLike(userId, recipeId);
+	}
+	
 }

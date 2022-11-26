@@ -4,16 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import org.bson.types.ObjectId;
-
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 
-public class Recipe {
+public class Recipe implements Comparable<Recipe> {
 
 	@JsonSerialize(using = ToStringSerializer.class)
 	
-	private ObjectId id;
+	private String id;
 	private String title;
 	private String description;
 	private List<String> ingredients = new ArrayList<>();
@@ -23,19 +21,18 @@ public class Recipe {
 	public Recipe() {
 	}
 	
-	public Recipe(String title, String description, List<String> ingredients, List<Integer> likes) {
+	public Recipe(String title, String description, List<String> ingredients) {
 		this.title = title;
 		this.description = description;
-		this.likes = likes;
 		this.ingredients = ingredients;
 	}
 
-	public ObjectId getId() {
+	public String getId() {
 		return id;
 	}
 
-	public void setId(ObjectId objectId) {
-		this.id = objectId;
+	public void setId(String id) {
+		this.id = id;
 	}
 
 	public String getTitle() {
@@ -89,5 +86,10 @@ public class Recipe {
 		Recipe other = (Recipe) obj;
 		return Objects.equals(id, other.id);
 	}
-	
+
+	@Override
+	public int compareTo(Recipe other) {
+		return getTitle().compareTo(other.getTitle());
+	}
+
 }

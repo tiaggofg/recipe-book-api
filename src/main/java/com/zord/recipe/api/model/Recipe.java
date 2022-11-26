@@ -12,6 +12,7 @@ import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 public class Recipe {
 
 	@JsonSerialize(using = ToStringSerializer.class)
+	
 	private ObjectId id;
 	private String title;
 	private String description;

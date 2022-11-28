@@ -54,6 +54,10 @@ public class Recipe implements Comparable<Recipe> {
 	public List<Integer> getLikes() {
 		return likes;
 	}
+	
+	public void setLikes(List<Integer> likes) {
+		this.likes = likes;
+	}
 
 	public List<String> getIngredients() {
 		return ingredients;
@@ -65,6 +69,10 @@ public class Recipe implements Comparable<Recipe> {
 	
 	public List<Comment> getComments() {
 		return comments;
+	}
+	
+	public void setComments(List<Comment> comments) {
+		this.comments = comments;
 	}
 
 	@Override

@@ -1,0 +1,14 @@
+/home/tiago/workspace/zord-recipe-api/src/main/java/com/zord/recipe/api/repositories/RecipeRepositoryImpl.java
+/home/tiago/workspace/zord-recipe-api/src/main/java/com/zord/recipe/api/config/Config.java
+/home/tiago/workspace/zord-recipe-api/src/main/java/com/zord/recipe/api/services/CommentServiceImpl.java
+/home/tiago/workspace/zord-recipe-api/src/main/java/com/zord/recipe/api/controllers/RecipeControllerImpl.java
+/home/tiago/workspace/zord-recipe-api/src/main/java/com/zord/recipe/api/services/RecipeService.java
+/home/tiago/workspace/zord-recipe-api/src/main/java/com/zord/recipe/api/repositories/RecipeRepository.java
+/home/tiago/workspace/zord-recipe-api/src/main/java/com/zord/recipe/api/services/CommentService.java
+/home/tiago/workspace/zord-recipe-api/src/main/java/com/zord/recipe/api/repositories/CommentRepositoryImpl.java
+/home/tiago/workspace/zord-recipe-api/src/main/java/com/zord/recipe/api/RecipeApplication.java
+/home/tiago/workspace/zord-recipe-api/src/main/java/com/zord/recipe/api/services/RecipeServiceImpl.java
+/home/tiago/workspace/zord-recipe-api/src/main/java/com/zord/recipe/api/model/Recipe.java
+/home/tiago/workspace/zord-recipe-api/src/main/java/com/zord/recipe/api/controllers/RecipeController.java
+/home/tiago/workspace/zord-recipe-api/src/main/java/com/zord/recipe/api/model/Comment.java
+/home/tiago/workspace/zord-recipe-api/src/main/java/com/zord/recipe/api/repositories/CommentRepository.java

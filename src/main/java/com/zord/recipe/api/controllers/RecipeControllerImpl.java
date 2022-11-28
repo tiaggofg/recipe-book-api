@@ -1,6 +1,8 @@
 package com.zord.recipe.api.controllers;
 
+import com.zord.recipe.api.model.Comment;
 import com.zord.recipe.api.model.Recipe;
+import com.zord.recipe.api.services.CommentService;
 import com.zord.recipe.api.services.RecipeService;
 
 import io.javalin.http.Context;
@@ -8,9 +10,11 @@ import io.javalin.http.Context;
 public class RecipeControllerImpl implements RecipeController {
 
 	private RecipeService recipeService;
+	private CommentService commentService;
 	
-	public RecipeControllerImpl(RecipeService recipeService) {
+	public RecipeControllerImpl(RecipeService recipeService, CommentService commentService) {
 		this.recipeService = recipeService;
+		this.commentService = commentService;
 	}
 
 	@Override
@@ -68,6 +72,31 @@ public class RecipeControllerImpl implements RecipeController {
 		var userId = Integer.parseInt(ctx.pathParam("userId"));
 		var recipeId = ctx.pathParam("id");
 		recipeService.removeLike(userId, recipeId);
+	}
+	
+	@Override
+	public void postComment(Context ctx) {
+		var recipeId = ctx.pathParam("id");
+		var comment = ctx.bodyAsClass(Comment.class);
+		var commentCreated = commentService.create(comment);
+		recipeService.addComment(recipeId, commentCreated);
+		ctx.json(commentCreated);
+	}
+	
+	@Override
+	public void putComment(Context ctx) {
+		var recipeId = ctx.pathParam("id");
+		var commentId = ctx.pathParam("commentId");
+		var comment = ctx.bodyAsClass(Comment.class);
+		recipeService.updateComment(recipeId, commentId, comment);
+	}
+	
+	@Override
+	public void deleteComment(Context ctx) {
+		var recipeId = ctx.pathParam("id");
+		var commentId = ctx.pathParam("commentId");
+		recipeService.removeComment(recipeId, commentId);
+		commentService.delete(commentId);
 	}
 
 }

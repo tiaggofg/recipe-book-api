@@ -13,5 +13,8 @@ public interface RecipeController {
 	void getBySearch(Context ctx);
 	void postLike(Context ctx);
 	void deleteLike(Context ctx);
+	void postComment(Context ctx);
+	void deleteComment(Context ctx);
+	void putComment(Context ctx);
 	
 }

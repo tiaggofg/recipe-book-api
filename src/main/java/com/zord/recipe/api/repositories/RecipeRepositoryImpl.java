@@ -13,6 +13,7 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Updates;
+import com.zord.recipe.api.model.Comment;
 import com.zord.recipe.api.model.Recipe;
 
 public class RecipeRepositoryImpl implements RecipeRepository {
@@ -92,9 +93,10 @@ public class RecipeRepositoryImpl implements RecipeRepository {
 	}
 	
 	@Override
-	public Recipe addLike(Integer userId, String id) {
-		Bson filter = Filters.eq("_id", id);
+	public Recipe addLike(Integer userId, String recipeId) {
+		Bson filter = Filters.eq("_id", recipeId);
 		Bson update = Updates.addToSet("likes", userId);
+		findById(recipeId).getLikes().add(userId);
 		return coll.findOneAndUpdate(filter, update);
 	}
 	
@@ -102,7 +104,31 @@ public class RecipeRepositoryImpl implements RecipeRepository {
 	public void removeLike(Integer userId, String recipeId) {
 		Bson filter = Filters.eq("_id", recipeId);
 		Bson update = Updates.pull("likes", userId);
+		findById(recipeId).getLikes().remove(userId);
 		coll.findOneAndUpdate(filter, update);
+	}
+	
+	@Override	
+	public Recipe addComment(String recipeId, Comment comment) {
+		Bson filter = Filters.eq("_id", recipeId);
+		Bson update = Updates.push("comments", comment);
+		findById(recipeId).getComments().add(comment);
+		return coll.findOneAndUpdate(filter, update);
+	}
+	
+	@Override
+	public Recipe updateComment(String recipeId, String commentId, Comment comment) {
+		comment.setId(commentId);
+		removeComment(recipeId, commentId);
+		return addComment(recipeId, comment);
+	}
+	
+	@Override
+	public void removeComment(String recipeId, String commentId) {
+		Bson filterRecipe = Filters.eq("_id", recipeId);
+		Bson filterComment = Filters.elemMatch("comments", Filters.eq("_id", commentId));
+		Bson update = Updates.pullByFilter(filterComment);
+		coll.findOneAndUpdate(filterRecipe, update);
 	}
 	
 }

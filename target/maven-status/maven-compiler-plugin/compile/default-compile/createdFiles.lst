@@ -1,0 +1,14 @@
+com/zord/recipe/api/services/RecipeServiceImpl.class
+com/zord/recipe/api/repositories/CommentRepositoryImpl.class
+com/zord/recipe/api/services/CommentServiceImpl.class
+com/zord/recipe/api/controllers/RecipeControllerImpl.class
+com/zord/recipe/api/repositories/CommentRepository.class
+com/zord/recipe/api/services/RecipeService.class
+com/zord/recipe/api/config/Config.class
+com/zord/recipe/api/model/Comment.class
+com/zord/recipe/api/model/Recipe.class
+com/zord/recipe/api/controllers/RecipeController.class
+com/zord/recipe/api/RecipeApplication.class
+com/zord/recipe/api/services/CommentService.class
+com/zord/recipe/api/repositories/RecipeRepository.class
+com/zord/recipe/api/repositories/RecipeRepositoryImpl.class

@@ -19,6 +19,7 @@ public class Config {
 	private static int applicationPort = 8080;
 	private static int mongoPort = 27017;
 	private static String mongoHost = "localhost";
+	private static String mongoDatabase = "zord_recipe";
 	private static String collection = "recipe";
 
 	public Config() {
@@ -30,6 +31,10 @@ public class Config {
 
 	public static String getCollection() {
 		return collection;
+	}
+
+	public static String getMongoDatabase() {
+		return mongoDatabase;
 	}
 
 	public static MongoClient getMongoClient() {

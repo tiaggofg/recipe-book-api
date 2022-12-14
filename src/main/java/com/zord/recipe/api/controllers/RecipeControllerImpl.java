@@ -82,8 +82,7 @@ public class RecipeControllerImpl implements RecipeController {
     public void postComment(Context ctx) {
         String recipeId = ctx.pathParam("id");
         Comment comment = ctx.bodyAsClass(Comment.class);
-        //Comment commentCreated = commentService.create(comment);
-        comment.setId(new ObjectId().toString());
+        Comment commentCreated = commentService.create(comment);
         recipeService.addComment(recipeId, comment);
         ctx.json(comment).status(HttpStatus.CREATED);
     }
@@ -94,6 +93,7 @@ public class RecipeControllerImpl implements RecipeController {
         String commentId = ctx.pathParam("commentId");
         Comment comment = ctx.bodyAsClass(Comment.class);
         recipeService.updateComment(recipeId, commentId, comment);
+        commentService.update(commentId, comment);
         ctx.status(HttpStatus.NO_CONTENT);
     }
 
@@ -102,7 +102,7 @@ public class RecipeControllerImpl implements RecipeController {
         String recipeId = ctx.pathParam("id");
         String commentId = ctx.pathParam("commentId");
         recipeService.removeComment(recipeId, commentId);
-        //commentService.delete(commentId);
+        commentService.delete(commentId);
         ctx.status(HttpStatus.NO_CONTENT);
     }
 

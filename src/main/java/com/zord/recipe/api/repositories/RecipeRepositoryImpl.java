@@ -3,6 +3,7 @@ package com.zord.recipe.api.repositories;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
+import com.zord.recipe.api.exceptions.ObjectNotFoundException;
 import com.zord.recipe.api.model.Comment;
 import com.zord.recipe.api.model.Recipe;
 import org.bson.conversions.Bson;
@@ -13,6 +14,7 @@ import java.util.Collections;
 import java.util.List;
 
 import static com.mongodb.client.model.Filters.eq;
+import static com.mongodb.client.model.Filters.regex;
 
 public class RecipeRepositoryImpl implements RecipeRepository {
 
@@ -34,16 +36,18 @@ public class RecipeRepositoryImpl implements RecipeRepository {
     @Override
     public Recipe findById(String id) {
         Bson filter = eq("_id", id);
-        return coll.find(filter).first();
+        Recipe recipe = coll.find(filter).first();
+        if (recipe == null) {
+            throw new ObjectNotFoundException("Receita id: " + id + " não encontrada!");
+        }
+        return recipe;
     }
 
     @Override
     public List<Recipe> findByIngredient(String ingredient) {
         List<Recipe> result = new ArrayList<>();
-        for (Recipe recipe : coll.find()) {
-            if (recipe.getIngredients().contains(ingredient)) {
-                result.add(recipe);
-            }
+        for (Recipe recipe : coll.find().filter(regex("ingredients", ingredient))) {
+            result.add(recipe);
         }
         Collections.sort(result);
         return result;
@@ -52,18 +56,12 @@ public class RecipeRepositoryImpl implements RecipeRepository {
     @Override
     public List<Recipe> searchInTitleAndDescription(String search) {
         List<Recipe> result = new ArrayList<>();
-        for (Recipe recipe : coll.find()) {
-            String[] wordTitle = recipe.getTitle().split(" ");
-            String[] wordDescription = recipe.getDescription().split(" ");
-            for (String s : wordTitle) {
-                if (s.contains(search) && !result.contains(recipe)) {
-                    result.add(recipe);
-                }
-            }
-            for (String s : wordDescription) {
-                if (s.contains(search) && !result.contains(recipe)) {
-                    result.add(recipe);
-                }
+        for (Recipe recipe : coll.find().filter(regex("title", search))) {
+            result.add(recipe);
+        }
+        for (Recipe recipe : coll.find().filter(regex("description", search))) {
+            if (!result.contains(recipe)) {
+                result.add(recipe);
             }
         }
         Collections.sort(result);
@@ -72,7 +70,7 @@ public class RecipeRepositoryImpl implements RecipeRepository {
 
     @Override
     public Recipe create(Recipe recipe) {
-        var id = new ObjectId().toString();
+        String id = new ObjectId().toString();
         recipe.setId(id);
         coll.insertOne(recipe);
         return findById(id);
@@ -125,5 +123,4 @@ public class RecipeRepositoryImpl implements RecipeRepository {
         recipe.getComments().removeIf(c -> c.getId().equals(commentId));
         update(recipeId, recipe);
     }
-
 }

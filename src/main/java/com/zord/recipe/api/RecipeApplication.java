@@ -5,6 +5,9 @@ import com.mongodb.client.MongoDatabase;
 import com.zord.recipe.api.config.Config;
 import com.zord.recipe.api.controllers.RecipeController;
 import com.zord.recipe.api.controllers.RecipeControllerImpl;
+import com.zord.recipe.api.exceptions.DefaultError;
+import com.zord.recipe.api.exceptions.ExistsUserIdException;
+import com.zord.recipe.api.exceptions.ObjectNotFoundException;
 import com.zord.recipe.api.repositories.CommentRepositoryImpl;
 import com.zord.recipe.api.repositories.RecipeRepositoryImpl;
 import com.zord.recipe.api.services.CommentService;
@@ -12,6 +15,8 @@ import com.zord.recipe.api.services.CommentServiceImpl;
 import com.zord.recipe.api.services.RecipeService;
 import com.zord.recipe.api.services.RecipeServiceImpl;
 import io.javalin.Javalin;
+import io.javalin.http.HttpStatus;
+import kotlin.random.Random;
 
 import static io.javalin.apibuilder.ApiBuilder.*;
 
@@ -57,6 +62,18 @@ public class RecipeApplication {
                     });
                 });
             });
+        });
+
+        app.exception(ObjectNotFoundException.class, (e, ctx) -> {
+           HttpStatus status = HttpStatus.NOT_FOUND;
+           DefaultError error = new DefaultError(String.valueOf(System.currentTimeMillis()), status.toString(), e.getMessage(), ctx.path());
+           ctx.json(error).status(status);
+        });
+
+        app.exception(ExistsUserIdException.class, (e, ctx) -> {
+           HttpStatus status = HttpStatus.CONFLICT;
+           DefaultError error = new DefaultError(String.valueOf(System.currentTimeMillis()), status.toString(), e.getMessage(), ctx.path());
+           ctx.json(error).status(status);
         });
     }
 }

@@ -3,6 +3,7 @@ package com.zord.recipe.api.repositories;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
+import com.zord.recipe.api.exceptions.ObjectNotFoundException;
 import com.zord.recipe.api.model.Comment;
 import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
@@ -12,7 +13,7 @@ import java.util.List;
 
 public class CommentRepositoryImpl implements CommentRepository {
 
-    private MongoCollection<Comment> coll;
+    private final MongoCollection<Comment> coll;
 
     public CommentRepositoryImpl(MongoDatabase database) {
         coll = database.getCollection("comment", Comment.class);
@@ -30,12 +31,19 @@ public class CommentRepositoryImpl implements CommentRepository {
     @Override
     public Comment findById(String id) {
         Bson filter = Filters.eq("_id", id);
-        return coll.find(filter).first();
+        Comment comment = coll.find(filter).first();
+        if (comment == null) {
+            throw new ObjectNotFoundException("Comentário id: " + id + " não encontrado!");
+        }
+        return comment;
     }
 
     @Override
     public Comment update(String id, Comment comment) {
         Bson filter = Filters.eq("_id", id);
+        if (coll.find(filter).first() == null) {
+            throw new ObjectNotFoundException("Comentário id: " + id + " não encontrado!");
+        }
         return coll.findOneAndReplace(filter, comment);
     }
 
@@ -50,7 +58,9 @@ public class CommentRepositoryImpl implements CommentRepository {
     @Override
     public void delete(String id) {
         Bson filter = Filters.eq("_id", id);
+        if (coll.find(filter).first() == null) {
+            throw new ObjectNotFoundException("Comentário id: " + id + " não encontrado!");
+        }
         coll.deleteOne(filter);
     }
-
 }

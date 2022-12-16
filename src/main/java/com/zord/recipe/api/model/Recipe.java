@@ -99,5 +99,4 @@ public class Recipe implements Comparable<Recipe> {
     public int compareTo(Recipe other) {
         return getTitle().compareTo(other.getTitle());
     }
-
 }

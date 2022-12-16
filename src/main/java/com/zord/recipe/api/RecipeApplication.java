@@ -7,6 +7,7 @@ import com.zord.recipe.api.controllers.RecipeController;
 import com.zord.recipe.api.controllers.RecipeControllerImpl;
 import com.zord.recipe.api.exceptions.DefaultError;
 import com.zord.recipe.api.exceptions.ExistsUserIdException;
+import com.zord.recipe.api.exceptions.IdInvalidException;
 import com.zord.recipe.api.exceptions.ObjectNotFoundException;
 import com.zord.recipe.api.repositories.CommentRepositoryImpl;
 import com.zord.recipe.api.repositories.RecipeRepositoryImpl;
@@ -16,7 +17,6 @@ import com.zord.recipe.api.services.RecipeService;
 import com.zord.recipe.api.services.RecipeServiceImpl;
 import io.javalin.Javalin;
 import io.javalin.http.HttpStatus;
-import kotlin.random.Random;
 
 import static io.javalin.apibuilder.ApiBuilder.*;
 
@@ -28,7 +28,6 @@ public class RecipeApplication {
 
         CommentService commentService = new CommentServiceImpl(new CommentRepositoryImpl(mongoDatabase));
         RecipeService recipeService = new RecipeServiceImpl(new RecipeRepositoryImpl(mongoDatabase));
-
         RecipeController recipeController = new RecipeControllerImpl(recipeService, commentService);
 
         Javalin app = Javalin.create().start(Config.getApplicationPort());
@@ -65,15 +64,21 @@ public class RecipeApplication {
         });
 
         app.exception(ObjectNotFoundException.class, (e, ctx) -> {
-           HttpStatus status = HttpStatus.NOT_FOUND;
-           DefaultError error = new DefaultError(String.valueOf(System.currentTimeMillis()), status.toString(), e.getMessage(), ctx.path());
-           ctx.json(error).status(status);
+            HttpStatus status = HttpStatus.NOT_FOUND;
+            DefaultError error = new DefaultError(String.valueOf(System.currentTimeMillis()), status.toString(), e.getMessage(), ctx.path());
+            ctx.json(error).status(status);
         });
 
         app.exception(ExistsUserIdException.class, (e, ctx) -> {
-           HttpStatus status = HttpStatus.CONFLICT;
-           DefaultError error = new DefaultError(String.valueOf(System.currentTimeMillis()), status.toString(), e.getMessage(), ctx.path());
-           ctx.json(error).status(status);
+            HttpStatus status = HttpStatus.CONFLICT;
+            DefaultError error = new DefaultError(String.valueOf(System.currentTimeMillis()), status.toString(), e.getMessage(), ctx.path());
+            ctx.json(error).status(status);
+        });
+
+        app.exception(IdInvalidException.class, (e, ctx) -> {
+            HttpStatus status = HttpStatus.BAD_REQUEST;
+            DefaultError error = new DefaultError(String.valueOf(System.currentTimeMillis()), status.toString(), e.getMessage(), ctx.path());
+            ctx.json(error).status(status);
         });
     }
 }

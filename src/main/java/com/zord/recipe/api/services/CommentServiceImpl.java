@@ -37,5 +37,4 @@ public class CommentServiceImpl implements CommentService {
     public void delete(String id) {
         commentRepository.delete(id);
     }
-
 }

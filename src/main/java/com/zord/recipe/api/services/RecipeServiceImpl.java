@@ -73,5 +73,4 @@ public class RecipeServiceImpl implements RecipeService {
     public void removeComment(String recipeId, String commentId) {
         recipeRepository.removeComment(recipeId, commentId);
     }
-
 }

@@ -54,5 +54,4 @@ public class Comment {
 		Comment other = (Comment) obj;
 		return Objects.equals(id, other.id);
 	}
-	
 }

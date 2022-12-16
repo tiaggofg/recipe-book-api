@@ -13,14 +13,13 @@ import org.bson.types.ObjectId;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 import static com.mongodb.client.model.Filters.eq;
 import static com.mongodb.client.model.Filters.regex;
 
 public class RecipeRepositoryImpl implements RecipeRepository {
 
-    private MongoCollection<Recipe> coll;
+    private final MongoCollection<Recipe> coll;
 
     public RecipeRepositoryImpl(MongoDatabase database) {
         coll = database.getCollection("recipe", Recipe.class);
@@ -152,12 +151,12 @@ public class RecipeRepositoryImpl implements RecipeRepository {
     }
 
     private boolean commentExists(Recipe recipe, String commentId) {
-       List<Comment> comments = recipe.getComments();
-       for (Comment c : comments) {
-           if (c.getId().equals(commentId)) {
-               return true;
-           }
-       }
-       return false;
+        List<Comment> comments = recipe.getComments();
+        for (Comment c : comments) {
+            if (c.getId().equals(commentId)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

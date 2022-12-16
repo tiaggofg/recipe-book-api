@@ -1,17 +1,17 @@
 package com.zord.recipe.api.controllers;
 
+import com.zord.recipe.api.exceptions.IdInvalidException;
 import com.zord.recipe.api.model.Comment;
 import com.zord.recipe.api.model.Recipe;
 import com.zord.recipe.api.services.CommentService;
 import com.zord.recipe.api.services.RecipeService;
 import io.javalin.http.Context;
 import io.javalin.http.HttpStatus;
-import org.bson.types.ObjectId;
 
 public class RecipeControllerImpl implements RecipeController {
 
-    private RecipeService recipeService;
-    private CommentService commentService;
+    private final RecipeService recipeService;
+    private final CommentService commentService;
 
     public RecipeControllerImpl(RecipeService recipeService, CommentService commentService) {
         this.recipeService = recipeService;
@@ -65,17 +65,25 @@ public class RecipeControllerImpl implements RecipeController {
 
     @Override
     public void postLike(Context ctx) {
-        Integer userId = Integer.parseInt(ctx.pathParam("userId"));
-        String recipeId = ctx.pathParam("id");
-        ctx.json(recipeService.addLike(userId, recipeId)).status(HttpStatus.CREATED);
+        try {
+            Integer userId = Integer.parseInt(ctx.pathParam("userId"));
+            String recipeId = ctx.pathParam("id");
+            ctx.json(recipeService.addLike(userId, recipeId)).status(HttpStatus.CREATED);
+        } catch (NumberFormatException e) {
+            throw new IdInvalidException("Id inválido!");
+        }
     }
 
     @Override
     public void deleteLike(Context ctx) {
-        Integer userId = Integer.parseInt(ctx.pathParam("userId"));
-        String recipeId = ctx.pathParam("id");
-        recipeService.removeLike(userId, recipeId);
-        ctx.status(HttpStatus.NO_CONTENT);
+        try {
+            Integer userId = Integer.parseInt(ctx.pathParam("userId"));
+            String recipeId = ctx.pathParam("id");
+            recipeService.removeLike(userId, recipeId);
+            ctx.status(HttpStatus.NO_CONTENT);
+        } catch (NumberFormatException e) {
+            throw new IdInvalidException("Id inválido!");
+        }
     }
 
     @Override
@@ -105,5 +113,4 @@ public class RecipeControllerImpl implements RecipeController {
         commentService.delete(commentId);
         ctx.status(HttpStatus.NO_CONTENT);
     }
-
 }

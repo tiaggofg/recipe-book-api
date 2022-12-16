@@ -1,6 +1,7 @@
 package com.zord.recipe.api.controllers;
 
 import com.zord.recipe.api.exceptions.IdInvalidException;
+import com.zord.recipe.api.exceptions.ObjectNotFoundException;
 import com.zord.recipe.api.model.Comment;
 import com.zord.recipe.api.model.Recipe;
 import com.zord.recipe.api.services.CommentService;
@@ -95,7 +96,12 @@ public class RecipeControllerImpl implements RecipeController {
         String recipeId = ctx.pathParam("id");
         Comment comment = ctx.bodyAsClass(Comment.class);
         Comment commentCreated = commentService.create(comment);
-        recipeService.addComment(recipeId, comment);
+        try {
+            recipeService.addComment(recipeId, comment);
+        } catch (ObjectNotFoundException e) {
+            commentService.delete(commentCreated.getId());
+            throw new ObjectNotFoundException(e.getMessage());
+        }
         ctx.json(comment).status(HttpStatus.CREATED);
     }
 

@@ -59,6 +59,10 @@ public class RecipeControllerImpl implements RecipeController {
     @Override
     public void delete(Context ctx) {
         String id = ctx.pathParam("id");
+        Recipe recipe = recipeService.findById(id);
+        if (!recipe.getComments().isEmpty()) {
+            recipe.getComments().forEach(c -> commentService.delete(c.getId()));
+        }
         recipeService.delete(id);
         ctx.status(HttpStatus.NO_CONTENT);
     }

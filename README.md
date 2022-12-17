@@ -1,6 +1,7 @@
 <h1 align="center"><b>Zord Recipe API</b></h1>
 
-API desenvolvida como teste para a vaga de desenvolvedor backend Java Jr da <a href="https://www.magazord.com.br/">Magazord</a>. Trata-se de uma API CRUD para receitas conforme esquema abaixo
+API desenvolvida como teste para a vaga de desenvolvedor backend Java Jr da <a href="https://www.magazord.com.br/">
+Magazord</a>. Trata-se de uma API CRUD para receitas conforme esquema abaixo
 
 ```json
 {
@@ -26,20 +27,21 @@ API desenvolvida como teste para a vaga de desenvolvedor backend Java Jr da <a h
 
 <h2><b>Como utilizar a API?</b></h2>
 
-Para utilizar/testar essa API é necessário baixar o arquivo zord-recipe-api-0.0.1-SNAPSHOT-jar-with-dependencies.jar que está na pasta target desse repositório e executar o comando
+Para utilizar/testar essa API é necessário baixar o arquivo zord-recipe-api-0.0.1-SNAPSHOT-jar-with-dependencies.jar que
+está na pasta target desse repositório e executar o comando
 
 ```
 java -jar zord-recipe-api-0.0.1-SNAPSHOT-jar-with-dependencies.jar
 ```
 
-em um terminal aberto no mesmo diretório que se encontra o arquivo baixado. Para executar o arquivo jar é necessário ter a JRE ou JDK versão 11 instalada. Assim como o banco de dados NoSQL MongoDB configurado na porta `27017`.
+em um terminal aberto no mesmo diretório que se encontra o arquivo baixado. Para executar o arquivo jar é necessário ter
+a JRE ou JDK versão 11 instalada. Assim como o banco de dados NoSQL MongoDB configurado na porta `27017`.
 
-<!--
 <h2><b>Endpoints Implementados</b></h2>
 
 <h3>POST /recipe/</h3>
 
-Endpoint utilizado para cadastrar uma nova receita. Recebe o seguinte request body
+Endpoint utilizado para cadastrar uma nova receita no banco de dados. Recebe um request body com exemplo abaixo
 
 ```json
 {
@@ -51,36 +53,343 @@ Endpoint utilizado para cadastrar uma nova receita. Recebe o seguinte request bo
   ]
 }
 ```
-E retorna um response body com o objeto criado com o `id` gerado, como exemplo abaixo
+
+E retorna um response body com o objeto criado e com o `id` gerado
 
 ```json
 {
-  "id": "5bc698399531146718e31220",
+  "id": "639cb6ffe478d8453d857150",
   "title": "Bolo de chocolate",
   "description": "Bolo de chocolate caseiro",
   "ingredients": [
     "ovo",
     "chocolate"
-  ]
+  ],
+  "likes": [],
+  "comments": []
 }
 ```
 
 <h3>GET /recipe/</h3>
 
+Esse endpoint retorna todas as receitas cadastradas no banco de dados conforme modelo abaixo. Retorna também HTTP status
+OK.
+
+```json
+[
+  {
+    "id": "639c7d79bf89243463a2cda5",
+    "title": "Feijoada",
+    "description": "Feijoada deliciosa para o fim de semana",
+    "ingredients": [
+      "Feijão",
+      "Bacon",
+      "Calabresa",
+      "Água",
+      "Sal",
+      "Alho",
+      "Cebola",
+      "Folhas de Louro"
+    ],
+    "likes": [
+      789,
+      510
+    ],
+    "comments": [
+      {
+        "id": "639ceee224b7837da5bf1780",
+        "comment": "Excelente receita!"
+      }
+    ]
+  },
+  {
+    "id": "639c7dfbbf89243463a2cda6",
+    "title": "Pão com banana e queijo",
+    "description": "Receita deliciosa para um café da manhã mais saudável",
+    "ingredients": [
+      "1 Banana",
+      "2 Fatias de pães",
+      "2 Fatias de queijo",
+      "Requeijão"
+    ],
+    "likes": [
+      759,
+      7596546,
+      7596
+    ],
+    "comments": []
+  },
+  {
+    "id": "639cb6ffe478d8453d857150",
+    "title": "Bolo de chocolate",
+    "description": "Bolo de chocolate caseiro",
+    "ingredients": [
+      "ovo",
+      "chocolate"
+    ],
+    "likes": [],
+    "comments": [
+      {
+        "id": "639cf8bf24b7837da5bf1783",
+        "comment": "Topzera!"
+      }
+    ]
+  }
+]
+```
+
 <h3>GET /recipe/ingredient</h3>
 
-<h3>GET /recipe/search</h3>
+Esse endpoint retorna uma lista de receitas que contém o ingrediente passado como parâmetro de consulta na requisição.
+Por exemplo, a request `localhost:8080/recipe/ingredient?ingredient=Banana` irá retornar uma array de receitas que
+contém o ingrediente Banana e o HTTP status 200
+
+```json
+[
+  {
+    "id": "639c7dfbbf89243463a2cda6",
+    "title": "Pão com banana e queijo",
+    "description": "Receita deliciosa para um café da manhã mais saudável",
+    "ingredients": [
+      "1 Banana",
+      "2 Fatias de pães",
+      "2 Fatias de queijo",
+      "Requeijão"
+    ],
+    "likes": [
+      759,
+      7596546,
+      7596
+    ],
+    "comments": []
+  }
+]
+```
+
+Caso a array retornada seja vazia, um erro padrão juntamente com o HTTP status Not Found (404) é retornado.
+
+Por exemplo, a request `localhost:8080/recipe/ingredients?ingredients=banana` irá retornar um response
+body como abaixo, pois a consulta realizada no banco de dados é `case sensitive`
+
+```json
+{
+  "timestamp": "1671233843297",
+  "status": "404 Not Found",
+  "error": "Nenhuma receita encontada!",
+  "path": "/recipe/ingredient"
+}
+```
 
 <h3>GET /recipe/search</h3>
+
+Assim como o endpoint acima, esse também realiza buscas e retorna uma array de receitas a partir de um parâmetro de
+consulta. Todavia, a consulta é realizada tanto no título quanto na descrição da receita.
+
+Por exemplo, a requisção `localhost:8080/recipe/search?search=deliciosa` irá retornar todas as receitas que contém a
+palavra deleciosa no título ou na descrição da receita
+
+```json
+[
+  {
+    "id": "639c7d79bf89243463a2cda5",
+    "title": "Feijoada",
+    "description": "Feijoada deliciosa para o fim de semana",
+    "ingredients": [
+      "Feijão",
+      "Bacon",
+      "Calabresa",
+      "Água",
+      "Sal",
+      "Alho",
+      "Cebola",
+      "Folhas de Louro"
+    ],
+    "likes": [
+      789,
+      510
+    ],
+    "comments": [
+      {
+        "id": "639ceee224b7837da5bf1780",
+        "comment": "Excelente receita!"
+      }
+    ]
+  },
+  {
+    "id": "639c7dfbbf89243463a2cda6",
+    "title": "Pão com banana e queijo",
+    "description": "Receita deliciosa para um café da manhã mais saudável",
+    "ingredients": [
+      "1 Banana",
+      "2 Fatias de pães",
+      "2 Fatias de queijo",
+      "Requeijão"
+    ],
+    "likes": [
+      759,
+      7596546,
+      7596
+    ],
+    "comments": []
+  }
+]
+```
+
+Vale ressaltar que as receitas retornadas estarão ordenadas de forma alfabética crescente a partir do título. Esse
+endpoint também retorna um erro padrão e um HTTP status 404 caso não seja encontrado nenhuma receita com o parâmetro de
+consulta passado na URI.
 
 <h3>GET /recipe/{id}</h3>
 
+Esse endpoint retorna uma única receita caso o id passado na URI exista. Por exemplo, a
+request `localhost:8080/recipe/639c7d79bf89243463a2cda5` irá retornar a receita que contém o
+id `639c7d79bf89243463a2cda5`, como exemplo abaixo, e
+o HTTP status 200
+
+```json
+{
+  "id": "639c7d79bf89243463a2cda5",
+  "title": "Feijoada",
+  "description": "Feijoada deliciosa para o fim de semana",
+  "ingredients": [
+    "Feijão",
+    "Bacon",
+    "Calabresa",
+    "Água",
+    "Sal",
+    "Alho",
+    "Cebola",
+    "Folhas de Louro"
+  ],
+  "likes": [
+    789,
+    510
+  ],
+  "comments": [
+    {
+      "id": "639ceee224b7837da5bf1780",
+      "comment": "Excelente receita!"
+    }
+  ]
+}
+```
+
+Caso não seja encontrado uma receita com o id fornecido, um erro padrão é retornado asism como o HTTP status 404
+
+```json
+{
+  "timestamp": "1671237132883",
+  "status": "404 Not Found",
+  "error": "Receita id: 639c7d79bf89243463a2cda5asdfa não encontrada!",
+  "path": "/recipe/639c7d79bf89243463a2cda5asdfa"
+}
+```
+
 <h3>PUT /recipe/{id}</h3>
+
+Esse endpoint atualiza a receita que tem o id passado URI. Os dados dessa receita são alterados para aqueles
+passados no request body.
+
+Por exemplo, a requisição PUT `localhost:8080/recipe/639cb6ffe478d8453d857150` com o request body abaixo
+
+```json
+{
+  "title": "Bolo de chocolate",
+  "description": "Bolo de chocolate caseiro",
+  "ingredients": [
+    "ovo",
+    "chocolate",
+    "açucar",
+    "farinha"
+  ],
+  "likes": [],
+  "comments": [
+    {
+      "id": "639cf8bf24b7837da5bf1783",
+      "comment": "Topzera!"
+    }
+  ]
+}
+```
+
+Irá retornar o HTTP status No Content (204) e terá atualizado o a receita com o id `639cb6ffe478d8453d857150`. Caso não
+exista uma receita com o id passado na URI, então um erro padrão e um HTTP status 404 são retornados
+
+```json
+{
+  "timestamp": "1671237774339",
+  "status": "404 Not Found",
+  "error": "Não foi possível atualizar a receita. Id: 639cb6ffe478d8453asdfasd857150 inexistente!",
+  "path": "/recipe/639cb6ffe478d8453asdfasd857150"
+}
+```
 
 <h3>DELETE /recipe/{id}</h3>
 
-<h3>POST /recipe/{id}/like</h3>
+Endpoint utilizado para excluir uma receita do banco de dados. Caso a receita contenha algum comentário, esses também
+são
+excluídos do banco de dados. Pois os comentários são salvos em uma collection separada e uma cópia de cada comentário é
+agregada às receitas. Após excluir as receitas e os comentários agregados a ela, é retornado um
+HTTP status 204.
 
+Se não for encontrado nenhum usuário com o id passado na URI, será retornado um HTTP status 404 e um erro padrão como
+abaixo
+
+```json
+{
+  "timestamp": "1671238204203",
+  "status": "404 Not Found",
+  "error": "Receita id: 639c7cfcbf89243463a2acda4sdfa não encontrada!",
+  "path": "/recipe/639c7cfcbf89243463a2acda4sdfa"
+}
+```
+
+<h3>POST /recipe/{id}/like/{userId}</h3>
+
+Esse endpoint adiciona o userId passado na URI a uma lista de ids de usuários que deram like na receita que contém o id
+também passado na URi. Retorna HTTP status 201, assim como a receita com a lista de likes atualizada.
+
+Por exemplo, a request `localhost:8080/recipe/639cb6ffe478d8453d857150/153` irá retornar
+
+```json
+{
+  "id": "639cb6ffe478d8453d857150",
+  "title": "Bolo de chocolate",
+  "description": "Bolo de chocolate caseiro",
+  "ingredients": [
+    "ovo",
+    "chocolate",
+    "açucar",
+    "farinha"
+  ],
+  "likes": [
+    153
+  ],
+  "comments": [
+    {
+      "id": "639cf8bf24b7837da5bf1783",
+      "comment": "Topzera!"
+    }
+  ]
+}
+```
+
+Na aplicação, o userId foi tipado com a Wrapper Class Integer. Ou seja, o userId passado na URI será parseado e caso
+ocorra algum problema, um erro padrão é retornado no corpo da resposta assim como um HTTP status 400 como abaixo
+
+```json
+{
+  "timestamp": "1671239106029",
+  "status": "400 Bad Request",
+  "error": "Id inválido!",
+  "path": "/recipe/639cb6ffe478d8453d857150/like/153asd"
+}
+```
+
+E caso não seja encontrado nenhuma receita com o id passado na URI, também é retornado um erro padrão com o HTTP status
+404, assim como nos outros endpoints.
+
+<!--
 <h3>DELETE /recipe/{id}/like/{userId}</h3>
 
 <h3>POST /recipe/{id}/comment</h3>

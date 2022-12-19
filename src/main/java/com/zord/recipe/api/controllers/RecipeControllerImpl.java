@@ -32,13 +32,13 @@ public class RecipeControllerImpl implements RecipeController {
 
     @Override
     public void getByIngredient(Context ctx) {
-        String ingredient = ctx.queryParamMap().values().stream().findAny().get().get(0);
+        String ingredient = ctx.queryParam("ingredient");
         ctx.json(recipeService.findByIngredient(ingredient)).status(HttpStatus.OK);
     }
 
     @Override
     public void getBySearch(Context ctx) {
-        String search = ctx.queryParamMap().values().stream().findAny().get().get(0);
+        String search = ctx.queryParam("search");
         ctx.json(recipeService.searchInTitleAndDescription(search)).status(HttpStatus.OK);
     }
 

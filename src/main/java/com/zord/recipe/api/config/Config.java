@@ -1,7 +1,6 @@
 package com.zord.recipe.api.config;
 
-import com.mongodb.MongoClientSettings;
-import com.mongodb.ServerAddress;
+import com.mongodb.*;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import org.bson.codecs.configuration.CodecProvider;
@@ -20,6 +19,7 @@ public class Config {
     private static final String mongoHost = "localhost";
     private static final String mongoDatabase = "zord_recipe";
     private static final String collection = "recipe";
+    private static final String conectionString = "";
 
     public Config() {
     }
@@ -46,4 +46,19 @@ public class Config {
                 .codecRegistry(pojoCodecRegistry).build());
     }
 
+    public static MongoClient getMongoAtlasClient() {
+        CodecProvider pojoCodecProvider = PojoCodecProvider.builder().automatic(true).build();
+        CodecRegistry pojoCodecRegistry = fromRegistries(MongoClientSettings.getDefaultCodecRegistry(),
+                fromProviders(pojoCodecProvider));
+
+        MongoClientSettings mongoClientSettings = MongoClientSettings.builder()
+                .applyConnectionString(new ConnectionString(conectionString))
+                .serverApi(ServerApi.builder()
+                        .version(ServerApiVersion.V1)
+                        .build())
+                .codecRegistry(pojoCodecRegistry)
+                .build();
+
+        return MongoClients.create(mongoClientSettings);
+    }
 }

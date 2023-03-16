@@ -23,7 +23,7 @@ import static io.javalin.apibuilder.ApiBuilder.*;
 public class RecipeApplication {
 
     public static void main(String[] args) {
-        MongoClient mongoClient = Config.getMongoClient();
+        MongoClient mongoClient = Config.getMongoAtlasClient();
         MongoDatabase mongoDatabase = mongoClient.getDatabase(Config.getMongoDatabase());
 
         CommentService commentService = new CommentServiceImpl(new CommentRepositoryImpl(mongoDatabase));

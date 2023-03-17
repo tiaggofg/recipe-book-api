@@ -8,35 +8,45 @@ import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.codecs.pojo.PojoCodecProvider;
 
 import java.util.List;
+import java.util.Properties;
 
 import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
 import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
 
-public class Config {
+public class Config extends Properties {
 
-    private static final int applicationPort = 8080;
-    private static final int mongoPort = 27017;
-    private static final String mongoHost = "localhost";
-    private static final String mongoDatabase = "zord_recipe";
-    private static final String collection = "recipe";
-    private static final String conectionString = "";
+    private int applicationPort;
+    private int mongoPort;
+    private String mongoHost;
+    private String mongoDatabase;
+    private String collection;
+    private String conectionString;
 
     public Config() {
     }
 
-    public static int getApplicationPort() {
+    public Config(Properties properties) {
+        applicationPort = Integer.parseInt(properties.getProperty("app.port"));
+        mongoPort = Integer.parseInt(properties.getProperty("db.port"));
+        mongoHost = properties.getProperty("db.host");
+        mongoDatabase = properties.getProperty("db.name");
+        collection = properties.getProperty("db.collection");
+        conectionString = properties.getProperty("db.stringConnection");
+    }
+
+    public int getApplicationPort() {
         return applicationPort;
     }
 
-    public static String getCollection() {
+    public String getCollection() {
         return collection;
     }
 
-    public static String getMongoDatabase() {
+    public String getMongoDatabase() {
         return mongoDatabase;
     }
 
-    public static MongoClient getMongoClient() {
+    public MongoClient getMongoClient() {
         CodecProvider pojoCodecProvider = PojoCodecProvider.builder().automatic(true).build();
         CodecRegistry pojoCodecRegistry = fromRegistries(MongoClientSettings.getDefaultCodecRegistry(),
                 fromProviders(pojoCodecProvider));
@@ -46,7 +56,7 @@ public class Config {
                 .codecRegistry(pojoCodecRegistry).build());
     }
 
-    public static MongoClient getMongoAtlasClient() {
+    public MongoClient getMongoAtlasClient() {
         CodecProvider pojoCodecProvider = PojoCodecProvider.builder().automatic(true).build();
         CodecRegistry pojoCodecRegistry = fromRegistries(MongoClientSettings.getDefaultCodecRegistry(),
                 fromProviders(pojoCodecProvider));

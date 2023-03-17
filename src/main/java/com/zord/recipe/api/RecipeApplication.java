@@ -1,5 +1,6 @@
 package com.zord.recipe.api;
 
+import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoDatabase;
 import com.zord.recipe.api.config.Config;
@@ -18,19 +19,36 @@ import com.zord.recipe.api.services.RecipeServiceImpl;
 import io.javalin.Javalin;
 import io.javalin.http.HttpStatus;
 
+import java.io.*;
+import java.util.Properties;
+
 import static io.javalin.apibuilder.ApiBuilder.*;
 
 public class RecipeApplication {
 
     public static void main(String[] args) {
-        MongoClient mongoClient = Config.getMongoAtlasClient();
-        MongoDatabase mongoDatabase = mongoClient.getDatabase(Config.getMongoDatabase());
+        String pwd = new File("").getAbsolutePath();
+
+        Config config = null;
+        try {
+            FileInputStream fileInputStream = new FileInputStream(pwd + "/zord-recipe.properties");
+            Properties properties = new Properties();
+            properties.load(fileInputStream);
+            config = new Config(properties);
+        } catch (IOException e) {
+            System.out.println("Ocorreu um erro ao ler o arquivo de configuração!");
+            e.printStackTrace();
+            return;
+        }
+
+        MongoClient mongoClient = config.getMongoAtlasClient();
+        MongoDatabase mongoDatabase = mongoClient.getDatabase(config.getMongoDatabase());
 
         CommentService commentService = new CommentServiceImpl(new CommentRepositoryImpl(mongoDatabase));
         RecipeService recipeService = new RecipeServiceImpl(new RecipeRepositoryImpl(mongoDatabase));
         RecipeController recipeController = new RecipeControllerImpl(recipeService, commentService);
 
-        Javalin app = Javalin.create().start(Config.getApplicationPort());
+        Javalin app = Javalin.create().start(config.getApplicationPort());
 
         app.routes(() -> {
             path("recipe", () -> {
@@ -61,6 +79,13 @@ public class RecipeApplication {
                     });
                 });
             });
+        });
+
+        app.exception(UnrecognizedPropertyException.class, (e, ctx) -> {
+           HttpStatus status = HttpStatus.BAD_REQUEST;
+           String errorMessage = "Request body inválido. Envie um JSON conforme específicado na documentação!";
+           DefaultError error = new DefaultError(String.valueOf(System.currentTimeMillis()), status.toString(), errorMessage, ctx.path());
+           ctx.json(error).status(status);
         });
 
         app.exception(ObjectNotFoundException.class, (e, ctx) -> {

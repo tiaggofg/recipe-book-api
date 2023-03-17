@@ -1,3 +1,6 @@
+# Properties file
+*.properties
+
 # Maven files
 target/maven-archiver/*
 target/maven-status/*

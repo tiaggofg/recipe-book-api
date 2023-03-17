@@ -1,4 +1,4 @@
-package com.zord.recipe.api.controllers;
+package com.recipe.book.api.controllers;
 
 import io.javalin.http.Context;
 

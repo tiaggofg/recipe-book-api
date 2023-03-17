@@ -1,4 +1,4 @@
-package com.zord.recipe.api.model;
+package com.recipe.book.api.model;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;

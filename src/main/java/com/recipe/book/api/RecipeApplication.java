@@ -1,21 +1,21 @@
-package com.zord.recipe.api;
+package com.recipe.book.api;
 
 import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoDatabase;
-import com.zord.recipe.api.config.Config;
-import com.zord.recipe.api.controllers.RecipeController;
-import com.zord.recipe.api.controllers.RecipeControllerImpl;
-import com.zord.recipe.api.exceptions.DefaultError;
-import com.zord.recipe.api.exceptions.ExistsUserIdException;
-import com.zord.recipe.api.exceptions.IdInvalidException;
-import com.zord.recipe.api.exceptions.ObjectNotFoundException;
-import com.zord.recipe.api.repositories.CommentRepositoryImpl;
-import com.zord.recipe.api.repositories.RecipeRepositoryImpl;
-import com.zord.recipe.api.services.CommentService;
-import com.zord.recipe.api.services.CommentServiceImpl;
-import com.zord.recipe.api.services.RecipeService;
-import com.zord.recipe.api.services.RecipeServiceImpl;
+import com.recipe.book.api.config.Config;
+import com.recipe.book.api.controllers.RecipeController;
+import com.recipe.book.api.controllers.RecipeControllerImpl;
+import com.recipe.book.api.exceptions.DefaultError;
+import com.recipe.book.api.exceptions.ExistsUserIdException;
+import com.recipe.book.api.exceptions.IdInvalidException;
+import com.recipe.book.api.exceptions.ObjectNotFoundException;
+import com.recipe.book.api.repositories.CommentRepositoryImpl;
+import com.recipe.book.api.repositories.RecipeRepositoryImpl;
+import com.recipe.book.api.services.CommentService;
+import com.recipe.book.api.services.CommentServiceImpl;
+import com.recipe.book.api.services.RecipeService;
+import com.recipe.book.api.services.RecipeServiceImpl;
 import io.javalin.Javalin;
 import io.javalin.http.HttpStatus;
 
@@ -31,7 +31,7 @@ public class RecipeApplication {
 
         Config config = null;
         try {
-            FileInputStream fileInputStream = new FileInputStream(pwd + "/zord-recipe.properties");
+            FileInputStream fileInputStream = new FileInputStream(pwd + "/recipe-book.properties");
             Properties properties = new Properties();
             properties.load(fileInputStream);
             config = new Config(properties);

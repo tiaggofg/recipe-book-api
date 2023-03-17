@@ -1,7 +1,7 @@
-package com.zord.recipe.api.services;
+package com.recipe.book.api.services;
 
-import com.zord.recipe.api.model.Comment;
-import com.zord.recipe.api.repositories.CommentRepository;
+import com.recipe.book.api.repositories.CommentRepository;
+import com.recipe.book.api.model.Comment;
 
 import java.util.List;
 

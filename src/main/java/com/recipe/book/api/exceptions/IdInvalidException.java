@@ -1,4 +1,4 @@
-package com.zord.recipe.api.exceptions;
+package com.recipe.book.api.exceptions;
 
 public class IdInvalidException extends RuntimeException {
 

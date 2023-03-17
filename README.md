@@ -1,7 +1,6 @@
-<h1 align="center"><b>Zord Recipe API</b></h1>
+<h1 align="center"><b>Recipe Book API</b></h1>
 
-API desenvolvida como teste para a vaga de desenvolvedor backend Java Jr da <a href="https://www.magazord.com.br/">
-Magazord</a>. Trata-se de uma API CRUD para receitas conforme esquema abaixo
+Esse é um fork do projeto <a href="github.com/tiaggofg/zord-recipe-api">Zord Recipe API</a> e se trata de uma API CRUD de receitas conforme esquema abaixo
 
 ```json
 {
@@ -25,9 +24,11 @@ Magazord</a>. Trata-se de uma API CRUD para receitas conforme esquema abaixo
 }
 ```
 
+O fork foi realizado para implementar novas funcionalidades a API, como cadastro de usuários, autenticação e integração com o <a href="https://openai.com/blog/chatgpt">Chat GPT</a>.
+
 <h2><b>Como utilizar a API?</b></h2>
 
-Para utilizar/testar essa API é necessário baixar o arquivo zord-recipe-api-0.0.1-SNAPSHOT-jar-with-dependencies.jar que
+Para utilizar/testar essa API é necessário baixar o arquivo recipe-book-api-0.0.1-SNAPSHOT-jar-with-dependencies.jar que
 está na pasta target desse repositório e executar o comando
 
 ```
@@ -35,7 +36,13 @@ java -jar zord-recipe-api-0.0.1-SNAPSHOT-jar-with-dependencies.jar
 ```
 
 em um terminal aberto no mesmo diretório que se encontra o arquivo baixado. Para executar o arquivo jar é necessário ter
-a JRE ou JDK versão 11 instalada. Assim como o banco de dados NoSQL MongoDB configurado na porta `27017`.
+a JRE ou JDK versão 11 instalada. Assim como o banco de dados NoSQL MongoDB configurado na porta `27017` ou a partir de uma string conexão.
+
+<h2>Arquivo de configuraçã</h2>
+
+Quem for utilizar a API pode escolher qual porta a API será executada assim como as informações referente a conexão com banco de dados. Essa informações
+devem ser inseridas em um arquivo chamado `recipe-book.properties`. Na raiz desse projeto há um sample de como preencher esse arquivo. Ressalto que
+a aplicação não irá subir sem esse arquivo euma exeção será lançada.
 
 <h2><b>Endpoints Implementados</b></h2>
 

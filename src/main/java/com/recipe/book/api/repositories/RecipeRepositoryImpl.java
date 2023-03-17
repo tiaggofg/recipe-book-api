@@ -1,12 +1,12 @@
-package com.zord.recipe.api.repositories;
+package com.recipe.book.api.repositories;
 
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
-import com.zord.recipe.api.exceptions.ExistsUserIdException;
-import com.zord.recipe.api.exceptions.ObjectNotFoundException;
-import com.zord.recipe.api.model.Comment;
-import com.zord.recipe.api.model.Recipe;
+import com.recipe.book.api.exceptions.ExistsUserIdException;
+import com.recipe.book.api.exceptions.ObjectNotFoundException;
+import com.recipe.book.api.model.Comment;
+import com.recipe.book.api.model.Recipe;
 import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
 

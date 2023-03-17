@@ -1,11 +1,11 @@
-package com.zord.recipe.api.controllers;
+package com.recipe.book.api.controllers;
 
-import com.zord.recipe.api.exceptions.IdInvalidException;
-import com.zord.recipe.api.exceptions.ObjectNotFoundException;
-import com.zord.recipe.api.model.Comment;
-import com.zord.recipe.api.model.Recipe;
-import com.zord.recipe.api.services.CommentService;
-import com.zord.recipe.api.services.RecipeService;
+import com.recipe.book.api.exceptions.IdInvalidException;
+import com.recipe.book.api.exceptions.ObjectNotFoundException;
+import com.recipe.book.api.model.Comment;
+import com.recipe.book.api.model.Recipe;
+import com.recipe.book.api.services.CommentService;
+import com.recipe.book.api.services.RecipeService;
 import io.javalin.http.Context;
 import io.javalin.http.HttpStatus;
 

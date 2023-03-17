@@ -1,10 +1,10 @@
-package com.zord.recipe.api.repositories;
+package com.recipe.book.api.services;
 
-import com.zord.recipe.api.model.Comment;
+import com.recipe.book.api.model.Comment;
 
 import java.util.List;
 
-public interface CommentRepository {
+public interface CommentService {
 
     List<Comment> findAll();
 

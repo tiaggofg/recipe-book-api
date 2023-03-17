@@ -1,4 +1,4 @@
-package com.zord.recipe.api.config;
+package com.recipe.book.api.config;
 
 import com.mongodb.*;
 import com.mongodb.client.MongoClient;

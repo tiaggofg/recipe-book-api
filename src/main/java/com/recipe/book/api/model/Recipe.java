@@ -9,8 +9,6 @@ import java.util.Objects;
 
 public class Recipe implements Comparable<Recipe> {
 
-    @JsonSerialize(using = ToStringSerializer.class)
-
     private String id;
     private String title;
     private String description;

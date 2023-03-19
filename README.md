@@ -1,10 +1,9 @@
 <h1 align="center"><b>Recipe Book API</b></h1>
 
-Esse é um fork do projeto <a href="github.com/tiaggofg/zord-recipe-api">Zord Recipe API</a> e se trata de uma API CRUD de receitas conforme esquema abaixo
+Esse é um fork do projeto <a href="https://github.com/tiaggofg/zord-recipe-api">Zord Recipe API</a> e se trata de uma API CRUD de receitas conforme esquema abaixo
 
 ```json
 {
-  "_id": "5bc698399531146718e31220",
   "title": "Bolo de chocolate",
   "description": "Bolo de chocolate caseiro",
   "likes": [
@@ -38,7 +37,7 @@ java -jar zord-recipe-api-0.0.1-SNAPSHOT-jar-with-dependencies.jar
 em um terminal aberto no mesmo diretório que se encontra o arquivo baixado. Para executar o arquivo jar é necessário ter
 a JRE ou JDK versão 11 instalada. Assim como o banco de dados NoSQL MongoDB configurado na porta `27017` ou a partir de uma string conexão.
 
-<h2>Arquivo de configuraçã</h2>
+<h2>Arquivo de configuração</h2>
 
 Quem for utilizar a API pode escolher qual porta a API será executada assim como as informações referente a conexão com banco de dados. Essa informações
 devem ser inseridas em um arquivo chamado `recipe-book.properties`. Na raiz desse projeto há um sample de como preencher esse arquivo. Ressalto que
@@ -65,7 +64,6 @@ E retorna um response body com o objeto criado e com o `id` gerado
 
 ```json
 {
-  "id": "639cb6ffe478d8453d857150",
   "title": "Bolo de chocolate",
   "description": "Bolo de chocolate caseiro",
   "ingredients": [
@@ -85,7 +83,6 @@ OK.
 ```json
 [
   {
-    "id": "639c7d79bf89243463a2cda5",
     "title": "Feijoada",
     "description": "Feijoada deliciosa para o fim de semana",
     "ingredients": [
@@ -104,13 +101,11 @@ OK.
     ],
     "comments": [
       {
-        "id": "639ceee224b7837da5bf1780",
         "comment": "Excelente receita!"
       }
     ]
   },
   {
-    "id": "639c7dfbbf89243463a2cda6",
     "title": "Pão com banana e queijo",
     "description": "Receita deliciosa para um café da manhã mais saudável",
     "ingredients": [
@@ -127,7 +122,6 @@ OK.
     "comments": []
   },
   {
-    "id": "639cb6ffe478d8453d857150",
     "title": "Bolo de chocolate",
     "description": "Bolo de chocolate caseiro",
     "ingredients": [
@@ -137,7 +131,6 @@ OK.
     "likes": [],
     "comments": [
       {
-        "id": "639cf8bf24b7837da5bf1783",
         "comment": "Topzera!"
       }
     ]
@@ -154,7 +147,6 @@ contém o ingrediente Banana e o HTTP status 200
 ```json
 [
   {
-    "id": "639c7dfbbf89243463a2cda6",
     "title": "Pão com banana e queijo",
     "description": "Receita deliciosa para um café da manhã mais saudável",
     "ingredients": [
@@ -198,7 +190,6 @@ palavra deleciosa no título ou na descrição da receita
 ```json
 [
   {
-    "id": "639c7d79bf89243463a2cda5",
     "title": "Feijoada",
     "description": "Feijoada deliciosa para o fim de semana",
     "ingredients": [
@@ -217,13 +208,11 @@ palavra deleciosa no título ou na descrição da receita
     ],
     "comments": [
       {
-        "id": "639ceee224b7837da5bf1780",
         "comment": "Excelente receita!"
       }
     ]
   },
   {
-    "id": "639c7dfbbf89243463a2cda6",
     "title": "Pão com banana e queijo",
     "description": "Receita deliciosa para um café da manhã mais saudável",
     "ingredients": [
@@ -255,7 +244,6 @@ o HTTP status 200
 
 ```json
 {
-  "id": "639c7d79bf89243463a2cda5",
   "title": "Feijoada",
   "description": "Feijoada deliciosa para o fim de semana",
   "ingredients": [
@@ -274,7 +262,6 @@ o HTTP status 200
   ],
   "comments": [
     {
-      "id": "639ceee224b7837da5bf1780",
       "comment": "Excelente receita!"
     }
   ]
@@ -312,7 +299,6 @@ Por exemplo, a requisição PUT `localhost:8080/recipe/639cb6ffe478d8453d857150`
   "likes": [],
   "comments": [
     {
-      "id": "639cf8bf24b7837da5bf1783",
       "comment": "Topzera!"
     }
   ]
@@ -360,7 +346,6 @@ Por exemplo, a request `localhost:8080/recipe/639cb6ffe478d8453d857150/153` irá
 
 ```json
 {
-  "id": "639cb6ffe478d8453d857150",
   "title": "Bolo de chocolate",
   "description": "Bolo de chocolate caseiro",
   "ingredients": [
@@ -374,7 +359,6 @@ Por exemplo, a request `localhost:8080/recipe/639cb6ffe478d8453d857150/153` irá
   ],
   "comments": [
     {
-      "id": "639cf8bf24b7837da5bf1783",
       "comment": "Topzera!"
     }
   ]
@@ -444,7 +428,6 @@ um id gerado pelo mongodb
 
 ```json
 {
-  "id": "639fab63b98c514ab6363b96",
   "comment": "Bom demais!"
 }
 ```

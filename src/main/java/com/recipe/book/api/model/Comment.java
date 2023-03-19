@@ -2,13 +2,8 @@ package com.recipe.book.api.model;
 
 import java.util.Objects;
 
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
-
 public class Comment {
 
-	@JsonSerialize(using = ToStringSerializer.class)
-	
 	private String id;
 	private String comment;
 	

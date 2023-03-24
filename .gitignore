@@ -4,7 +4,6 @@
 # Maven files
 target/maven-archiver/*
 target/maven-status/*
-target/zord-recipe-api-0.0.1-SNAPSHOT.jar
 
 # IntelliJ path
 .idea/*

@@ -22,9 +22,8 @@ import io.javalin.http.Context;
 import io.javalin.http.HttpStatus;
 import io.javalin.plugin.bundled.CorsPluginConfig;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Properties;
 
 import static io.javalin.apibuilder.ApiBuilder.*;
@@ -32,11 +31,9 @@ import static io.javalin.apibuilder.ApiBuilder.*;
 public class RecipeApplication {
 
     public static void main(String[] args) {
-        String pwd = new File("").getAbsolutePath();
-
         Config appConfig = null;
         try {
-            FileInputStream fileInputStream = new FileInputStream(pwd + "/recipe-book.properties");
+            InputStream fileInputStream = ClassLoader.getSystemResourceAsStream("recipe-book.properties");
             Properties properties = new Properties();
             properties.load(fileInputStream);
             appConfig = new Config(properties);

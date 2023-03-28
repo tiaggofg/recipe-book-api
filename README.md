@@ -27,21 +27,28 @@ O fork foi realizado para implementar novas funcionalidades a API, como cadastro
 
 <h2><b>Como utilizar a API?</b></h2>
 
-Para utilizar/testar essa API é necessário baixar o arquivo recipe-book-api-0.0.1-SNAPSHOT-jar-with-dependencies.jar que
-está na pasta target desse repositório e executar o comando
+Para utilizar/testar a API é preciso clonar esse repositório e compilar o projeto utilizando maven. Lembrando que antes disso é preciso ter o arquivo de configurações
+ `recipe-book.properties` na pasta `resources`. Você pode saber mais na seção <a href="#properties-file">Arquivo de configuração</a>".
+
+Tendo o arquivo `recipe-book.properties` preenchido com os dados necessários basta exeuctar o comando abaixo
 
 ```
-java -jar zord-recipe-api-0.0.1-SNAPSHOT-jar-with-dependencies.jar
+mvn package
 ```
 
-em um terminal aberto no mesmo diretório que se encontra o arquivo baixado. Para executar o arquivo jar é necessário ter
-a JRE ou JDK versão 11 instalada. Assim como o banco de dados NoSQL MongoDB configurado na porta `27017` ou a partir de uma string conexão.
+Que um arquivo `.jar` será gerado na pasta `target` e poderá ser executado com o seguinte comando
 
-<h2>Arquivo de configuração</h2>
+```
+java -jar recipe-book-api.jar
+```
 
-Quem for utilizar a API pode escolher qual porta a API será executada assim como as informações referente a conexão com banco de dados. Essa informações
-devem ser inseridas em um arquivo chamado `recipe-book.properties`. Na raiz desse projeto há um sample de como preencher esse arquivo. Ressalto que
-a aplicação não irá subir sem esse arquivo euma exeção será lançada.
+Ressalto que para gerar o arquivo `jar` e executá-lo é preciso ter o maven assim como o Java versão 11 instalado. Caso tenha dificuldades
+entre em contato via <a href="mailto:tiago.godoy@proton.me">email</a> que estarei disposto a ajudá-lo.
+
+<h2 id="properties-file">Arquivo de configuração</h2>
+
+As informações referente a acesso a banco de dados e qual porta a aplicação devem ser preenchidas no arquivo `recipe-book.properties` na pasta `resource`.
+Nessa mesma pasta há um arquivo <i>sample</i> de como as informações devem ser preenchidas. Ressalto que a aplicação não irá subir sem esse arquivo e uma exeção será lançada.
 
 <h2><b>Endpoints Implementados</b></h2>
 

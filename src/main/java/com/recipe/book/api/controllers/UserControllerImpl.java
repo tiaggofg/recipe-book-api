@@ -15,7 +15,7 @@ import java.util.Set;
 
 public class UserControllerImpl implements UserController {
 
-    private UserService service;
+    private final UserService service;
 
     public UserControllerImpl(UserService service) {
         this.service = service;
@@ -56,7 +56,7 @@ public class UserControllerImpl implements UserController {
     }
 
     @Override
-    public void putUser(Context ctx) {
+    public void putUserByName(Context ctx) {
         User user = ctx.bodyAsClass(User.class);
         String userName = ctx.pathParam("userName");
         User updatedUser = service.updateUser(userName, user);
@@ -71,7 +71,7 @@ public class UserControllerImpl implements UserController {
     }
 
     @Override
-    public void deleteUser(Context ctx) {
+    public void deleteUserByName(Context ctx) {
         String userName = ctx.pathParam("userName");
         service.deleteUser(userName);
         ctx.status(HttpStatus.NO_CONTENT);

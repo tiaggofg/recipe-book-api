@@ -67,6 +67,15 @@ public class RecipeApplication {
             });
             path("/user", () -> {
                post(userController::postUser);
+               path("/{userId}", () -> {
+                   get(userController::getUserById);
+               });
+               path("/{userName}", () -> {
+                   get(userController::getUserByName);
+                   put(userController::putUserByName);
+                   delete(userController::deleteUserByName);
+               });
+
             });
             path("recipe", () -> {
                 get(recipeController::get);

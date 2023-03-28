@@ -1,8 +1,8 @@
-#application
+# application
 app.port=###
 
 # database
 db.port=####
 db.host=#####
-db.name=zord_recipe
+db.name=recipe_book
 db.stringConnection=#########

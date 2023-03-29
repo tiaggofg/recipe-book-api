@@ -32,6 +32,4 @@ public interface RecipeRepository {
     void removeLike(Integer userId, String recipeId);
 
     void removeComment(String recipeId, String commentId);
-
-    Recipe saveOne(BasicDBObject recipe) throws IOException;
 }

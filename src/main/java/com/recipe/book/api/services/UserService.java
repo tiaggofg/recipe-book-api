@@ -13,4 +13,6 @@ public interface UserService {
     void registerUser(User user);
     void deleteUser(String userName);
     boolean isValidCredentials(BasicAuthCredentials authCredentials);
+    void addRecipe(String username, String id);
+    void removeRecipe(String username, String recipeId);
 }

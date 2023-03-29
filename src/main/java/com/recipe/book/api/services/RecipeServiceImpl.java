@@ -73,16 +73,6 @@ public class RecipeServiceImpl implements RecipeService {
     }
 
     @Override
-    public Recipe saveOne(BasicDBObject recipe) {
-        try {
-            return recipeRepository.saveOne(recipe);
-        } catch(IOException e) {
-            Log.error(e.getMessage(), RecipeServiceImpl.class, e);
-            return null;
-        }
-    }
-
-    @Override
     public void removeComment(String recipeId, String commentId) {
         recipeRepository.removeComment(recipeId, commentId);
     }

@@ -1,7 +1,5 @@
 package com.recipe.book.api.model;
 
-import com.mongodb.DBRef;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -9,7 +7,7 @@ import java.util.Objects;
 public class Recipe implements Comparable<Recipe> {
 
     private String id;
-    private DBRef author;
+    private String authorId;
     private String title;
     private String description;
     private List<String> ingredients = new ArrayList<>();
@@ -20,8 +18,8 @@ public class Recipe implements Comparable<Recipe> {
     public Recipe() {
     }
 
-    public Recipe(DBRef author, String title, String description, List<String> ingredients, List<String> preparation) {
-        this.author = author;
+    public Recipe(String authorId, String title, String description, List<String> ingredients, List<String> preparation) {
+        this.authorId = authorId;
         this.title = title;
         this.description = description;
         this.ingredients = ingredients;
@@ -32,12 +30,12 @@ public class Recipe implements Comparable<Recipe> {
         return id;
     }
 
-    public DBRef getAuthor() {
-        return author;
+    public String getAuthorId() {
+        return authorId;
     }
 
-    public void setAuthor(DBRef author) {
-        this.author = author;
+    public void setAuthorId(String authorId) {
+        this.authorId = authorId;
     }
 
     public void setId(String id) {

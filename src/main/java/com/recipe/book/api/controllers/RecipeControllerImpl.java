@@ -1,7 +1,5 @@
 package com.recipe.book.api.controllers;
 
-import com.mongodb.BasicDBObject;
-import com.mongodb.DBRef;
 import com.recipe.book.api.exceptions.IdInvalidException;
 import com.recipe.book.api.exceptions.ObjectNotFoundException;
 import com.recipe.book.api.model.Comment;
@@ -12,8 +10,6 @@ import com.recipe.book.api.services.RecipeService;
 import com.recipe.book.api.services.UserService;
 import io.javalin.http.Context;
 import io.javalin.http.HttpStatus;
-import org.bson.BsonDocument;
-import org.bson.conversions.Bson;
 
 public class RecipeControllerImpl implements RecipeController {
 
@@ -52,18 +48,14 @@ public class RecipeControllerImpl implements RecipeController {
 
     @Override
     public void post(Context ctx) {
-        //Recipe recipe = ctx.bodyAsClass(Recipe.class);
-        String jsonRequest = ctx.body();
-
         String username = ctx.basicAuthCredentials().getUsername();
         User author = userService.findUserByName(username);
 
-        BasicDBObject recipe = BasicDBObject.parse(jsonRequest);
+        Recipe recipe = ctx.bodyAsClass(Recipe.class);
+        recipe.setAuthorId(author.getId());
+        Recipe createdRecipe = recipeService.create(recipe);
 
-        recipe.append("author", new DBRef("user", author.getId()));
-
-        Recipe createdRecipe = recipeService.saveOne(recipe);
-
+        userService.addRecipe(username, createdRecipe.getId());
         ctx.json(createdRecipe).status(HttpStatus.CREATED);
     }
 
@@ -77,12 +69,14 @@ public class RecipeControllerImpl implements RecipeController {
 
     @Override
     public void delete(Context ctx) {
-        String id = ctx.pathParam("id");
-        Recipe recipe = recipeService.findById(id);
+        String username = ctx.basicAuthCredentials().getUsername();
+        String recipeId = ctx.pathParam("id");
+        Recipe recipe = recipeService.findById(recipeId);
         if (!recipe.getComments().isEmpty()) {
             recipe.getComments().forEach(c -> commentService.delete(c.getId()));
         }
-        recipeService.delete(id);
+        recipeService.delete(recipeId);
+        userService.removeRecipe(username, recipeId);
         ctx.status(HttpStatus.NO_CONTENT);
     }
 

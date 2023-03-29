@@ -1,6 +1,5 @@
 package com.recipe.book.api.services;
 
-import com.mongodb.BasicDBObject;
 import com.recipe.book.api.model.Comment;
 import com.recipe.book.api.model.Recipe;
 
@@ -31,6 +30,4 @@ public interface RecipeService {
     void removeComment(String recipeId, String commentId);
 
     void updateComment(String recipeId, String commentId, Comment comment);
-
-    Recipe saveOne(BasicDBObject recipe);
 }

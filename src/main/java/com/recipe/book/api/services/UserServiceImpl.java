@@ -48,4 +48,14 @@ public class UserServiceImpl implements UserService {
         User user = repository.findUserByName(userName);
         return user != null && user.getPassword().equals(password);
     }
+
+    @Override
+    public void addRecipe(String username, String recipeId) {
+        repository.addRecipe(username, recipeId);
+    }
+
+    @Override
+    public void removeRecipe(String username, String recipeId) {
+        repository.removeRecipe(username, recipeId);
+    }
 }

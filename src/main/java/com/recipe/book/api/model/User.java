@@ -1,7 +1,6 @@
 package com.recipe.book.api.model;
 
-import com.mongodb.DBRef;
-import org.bson.types.ObjectId;
+import org.bson.codecs.pojo.annotations.BsonProperty;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,19 +8,21 @@ import java.util.Objects;
 
 public class User {
 
-    private ObjectId id;
+    private String id;
     private String firstName;
     private String lastName;
+
+    @BsonProperty(value = "username")
     private String userName;
     private String password;
     private String email;
     private String phoneNumber;
-    private List<DBRef> recipes = new ArrayList<>();
+    private List<String> recipeIds = new ArrayList<>();
 
     public User() {
     }
 
-    public User(ObjectId id, String firstName, String lastName, String userName, String password, String email, String phoneNumber) {
+    public User(String id, String firstName, String lastName, String userName, String password, String email, String phoneNumber) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -31,11 +32,11 @@ public class User {
         this.phoneNumber = phoneNumber;
     }
 
-    public ObjectId getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(ObjectId id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -87,12 +88,12 @@ public class User {
         this.phoneNumber = phoneNumber;
     }
 
-    public List<DBRef> getRecipes() {
-        return recipes;
+    public List<String> getRecipeIds() {
+        return recipeIds;
     }
 
-    public void setRecipes(List<DBRef> recipes) {
-        this.recipes = recipes;
+    public void setRecipeIds(List<String> recipeIds) {
+        this.recipeIds = recipeIds;
     }
 
     @Override

@@ -1,22 +1,30 @@
 package com.recipe.book.api.controllers;
 
+import com.mongodb.BasicDBObject;
+import com.mongodb.DBRef;
 import com.recipe.book.api.exceptions.IdInvalidException;
 import com.recipe.book.api.exceptions.ObjectNotFoundException;
 import com.recipe.book.api.model.Comment;
 import com.recipe.book.api.model.Recipe;
+import com.recipe.book.api.model.User;
 import com.recipe.book.api.services.CommentService;
 import com.recipe.book.api.services.RecipeService;
+import com.recipe.book.api.services.UserService;
 import io.javalin.http.Context;
 import io.javalin.http.HttpStatus;
+import org.bson.BsonDocument;
+import org.bson.conversions.Bson;
 
 public class RecipeControllerImpl implements RecipeController {
 
     private final RecipeService recipeService;
+    private final UserService userService;
     private final CommentService commentService;
 
-    public RecipeControllerImpl(RecipeService recipeService, CommentService commentService) {
+    public RecipeControllerImpl(RecipeService recipeService, UserService userService, CommentService commentService) {
         this.recipeService = recipeService;
         this.commentService = commentService;
+        this.userService = userService;
     }
 
     @Override
@@ -44,9 +52,19 @@ public class RecipeControllerImpl implements RecipeController {
 
     @Override
     public void post(Context ctx) {
-        Recipe recipe = ctx.bodyAsClass(Recipe.class);
-        Recipe recipeCreated = recipeService.create(recipe);
-        ctx.json(recipeCreated).status(HttpStatus.CREATED);
+        //Recipe recipe = ctx.bodyAsClass(Recipe.class);
+        String jsonRequest = ctx.body();
+
+        String username = ctx.basicAuthCredentials().getUsername();
+        User author = userService.findUserByName(username);
+
+        BasicDBObject recipe = BasicDBObject.parse(jsonRequest);
+
+        recipe.append("author", new DBRef("user", author.getId()));
+
+        Recipe createdRecipe = recipeService.saveOne(recipe);
+
+        ctx.json(createdRecipe).status(HttpStatus.CREATED);
     }
 
     @Override

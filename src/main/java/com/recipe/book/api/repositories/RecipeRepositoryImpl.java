@@ -1,5 +1,7 @@
 package com.recipe.book.api.repositories;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mongodb.BasicDBObject;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
@@ -10,6 +12,8 @@ import com.recipe.book.api.model.Recipe;
 import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
 
+import java.io.DataInput;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -20,9 +24,11 @@ import static com.mongodb.client.model.Filters.regex;
 public class RecipeRepositoryImpl implements RecipeRepository {
 
     private final MongoCollection<Recipe> coll;
+    private final MongoCollection<BasicDBObject> abstractColl;
 
     public RecipeRepositoryImpl(MongoDatabase database) {
         coll = database.getCollection("recipe", Recipe.class);
+        abstractColl = database.getCollection("recipe", BasicDBObject.class);
     }
 
     @Override
@@ -148,6 +154,13 @@ public class RecipeRepositoryImpl implements RecipeRepository {
         }
         recipe.getComments().removeIf(c -> c.getId().equals(commentId));
         update(recipeId, recipe);
+    }
+
+    @Override
+    public Recipe saveOne(BasicDBObject recipe) throws IOException {
+        var insertedRecipe = abstractColl.insertOne(recipe);
+        ObjectMapper mapper = new ObjectMapper();
+        return mapper.readValue((DataInput) insertedRecipe, Recipe.class);
     }
 
     private boolean commentExists(Recipe recipe, String commentId) {

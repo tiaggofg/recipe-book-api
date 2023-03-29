@@ -1,8 +1,10 @@
 package com.recipe.book.api.repositories;
 
+import com.mongodb.BasicDBObject;
 import com.recipe.book.api.model.Comment;
 import com.recipe.book.api.model.Recipe;
 
+import java.io.IOException;
 import java.util.List;
 
 public interface RecipeRepository {
@@ -31,4 +33,5 @@ public interface RecipeRepository {
 
     void removeComment(String recipeId, String commentId);
 
+    Recipe saveOne(BasicDBObject recipe) throws IOException;
 }

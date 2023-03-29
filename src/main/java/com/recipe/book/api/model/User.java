@@ -1,7 +1,10 @@
 package com.recipe.book.api.model;
 
+import com.mongodb.DBRef;
 import org.bson.types.ObjectId;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class User {
@@ -13,6 +16,7 @@ public class User {
     private String password;
     private String email;
     private String phoneNumber;
+    private List<DBRef> recipes = new ArrayList<>();
 
     public User() {
     }
@@ -81,6 +85,14 @@ public class User {
 
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
+    }
+
+    public List<DBRef> getRecipes() {
+        return recipes;
+    }
+
+    public void setRecipes(List<DBRef> recipes) {
+        this.recipes = recipes;
     }
 
     @Override

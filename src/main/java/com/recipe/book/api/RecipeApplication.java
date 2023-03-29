@@ -45,13 +45,13 @@ public class RecipeApplication {
         MongoClient mongoClient = appConfig.getMongoAtlasClient();
         MongoDatabase mongoDatabase = mongoClient.getDatabase(appConfig.getMongoDatabase());
 
-        CommentService commentService = new CommentServiceImpl(new CommentRepositoryImpl(mongoDatabase));
-        RecipeService recipeService = new RecipeServiceImpl(new RecipeRepositoryImpl(mongoDatabase));
-        RecipeController recipeController = new RecipeControllerImpl(recipeService, commentService);
-
         UserRepository userRepository = new UserRepositoryImpl(mongoDatabase);
         UserService userService = new UserServiceImpl(userRepository);
         UserController userController = new UserControllerImpl(userService);
+
+        CommentService commentService = new CommentServiceImpl(new CommentRepositoryImpl(mongoDatabase));
+        RecipeService recipeService = new RecipeServiceImpl(new RecipeRepositoryImpl(mongoDatabase));
+        RecipeController recipeController = new RecipeControllerImpl(recipeService, userService, commentService);
 
         Javalin app = Javalin.create(config -> {
             config.http.defaultContentType = "JSON";

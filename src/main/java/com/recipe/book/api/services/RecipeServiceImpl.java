@@ -1,9 +1,12 @@
 package com.recipe.book.api.services;
 
+import com.mongodb.BasicDBObject;
+import com.recipe.book.api.log.Log;
 import com.recipe.book.api.repositories.RecipeRepository;
 import com.recipe.book.api.model.Comment;
 import com.recipe.book.api.model.Recipe;
 
+import java.io.IOException;
 import java.util.List;
 
 public class RecipeServiceImpl implements RecipeService {
@@ -67,6 +70,16 @@ public class RecipeServiceImpl implements RecipeService {
     @Override
     public void updateComment(String recipeId, String commentId, Comment comment) {
         recipeRepository.updateComment(recipeId, commentId, comment);
+    }
+
+    @Override
+    public Recipe saveOne(BasicDBObject recipe) {
+        try {
+            return recipeRepository.saveOne(recipe);
+        } catch(IOException e) {
+            Log.error(e.getMessage(), RecipeServiceImpl.class, e);
+            return null;
+        }
     }
 
     @Override

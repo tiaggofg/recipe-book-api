@@ -1,7 +1,6 @@
 package com.recipe.book.api.model;
 
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
+import com.mongodb.DBRef;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,23 +9,35 @@ import java.util.Objects;
 public class Recipe implements Comparable<Recipe> {
 
     private String id;
+    private DBRef author;
     private String title;
     private String description;
     private List<String> ingredients = new ArrayList<>();
+    private List<String> preparation = new ArrayList<>();
     private List<Integer> likes = new ArrayList<>();
     private List<Comment> comments = new ArrayList<>();
 
     public Recipe() {
     }
 
-    public Recipe(String title, String description, List<String> ingredients) {
+    public Recipe(DBRef author, String title, String description, List<String> ingredients, List<String> preparation) {
+        this.author = author;
         this.title = title;
         this.description = description;
         this.ingredients = ingredients;
+        this.preparation = preparation;
     }
 
     public String getId() {
         return id;
+    }
+
+    public DBRef getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(DBRef author) {
+        this.author = author;
     }
 
     public void setId(String id) {
@@ -63,6 +74,14 @@ public class Recipe implements Comparable<Recipe> {
 
     public void setIngredients(List<String> ingredients) {
         this.ingredients = ingredients;
+    }
+
+    public List<String> getPreparation() {
+        return preparation;
+    }
+
+    public void setPreparation(List<String> preparation) {
+        this.preparation = preparation;
     }
 
     public List<Comment> getComments() {

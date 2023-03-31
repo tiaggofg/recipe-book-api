@@ -12,7 +12,7 @@ public class Recipe implements Comparable<Recipe> {
     private String description;
     private List<String> ingredients = new ArrayList<>();
     private List<String> preparation = new ArrayList<>();
-    private List<Integer> likes = new ArrayList<>();
+    private List<String> likes = new ArrayList<>();
     private List<Comment> comments = new ArrayList<>();
 
     public Recipe() {
@@ -58,11 +58,11 @@ public class Recipe implements Comparable<Recipe> {
         this.description = description;
     }
 
-    public List<Integer> getLikes() {
+    public List<String> getLikes() {
         return likes;
     }
 
-    public void setLikes(List<Integer> likes) {
+    public void setLikes(List<String> likes) {
         this.likes = likes;
     }
 

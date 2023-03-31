@@ -1,27 +1,23 @@
 package com.recipe.book.api.repositories;
 
-import com.mongodb.BasicDBObject;
 import com.recipe.book.api.model.Comment;
 import com.recipe.book.api.model.Recipe;
 
-import java.io.IOException;
 import java.util.List;
 
 public interface RecipeRepository {
 
-    List<Recipe> findAll();
+    Recipe findUserRecipe(String id, String authorId);
 
-    List<Recipe> findByIngredient(String ingredient);
+    List<Recipe> findByIngredient(String ingredient, String authorId);
 
-    List<Recipe> searchInTitleAndDescription(String search);
+    List<Recipe> searchInTitleAndDescription(String search, String authorId);
 
-    Recipe update(String id, Recipe recipe);
-
-    Recipe findById(String id);
+    Recipe update(String id, String authorId, Recipe recipe);
 
     Recipe create(Recipe recipe);
 
-    Recipe addLike(Integer userId, String recipeId);
+    Recipe addLike(String authorId, String recipeId);
 
     Recipe addComment(String recipeId, Comment comment);
 
@@ -29,7 +25,9 @@ public interface RecipeRepository {
 
     void delete(String id);
 
-    void removeLike(Integer userId, String recipeId);
+    void removeLike(String authorId, String recipeId);
 
     void removeComment(String recipeId, String commentId);
+
+    List<Recipe> findAllUserRecipe(String userId);
 }

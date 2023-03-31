@@ -7,27 +7,27 @@ import java.util.List;
 
 public interface RecipeService {
 
-    List<Recipe> findAll();
+    List<Recipe> findByIngredient(String ingredient, String authorId);
 
-    List<Recipe> findByIngredient(String ingredient);
+    List<Recipe> searchInTitleAndDescription(String search, String authorId);
 
-    List<Recipe> searchInTitleAndDescription(String search);
-
-    Recipe update(String id, Recipe recipe);
-
-    Recipe findById(String id);
+    Recipe update(String id, String authorId, Recipe recipe);
 
     Recipe create(Recipe recipe);
 
-    Recipe addLike(Integer userId, String recipeId);
+    Recipe addLike(String authorId, String recipeId);
 
     Recipe addComment(String recipeId, Comment comment);
 
     void delete(String id);
 
-    void removeLike(Integer userId, String recipeId);
+    void removeLike(String authorId, String recipeId);
 
     void removeComment(String recipeId, String commentId);
 
     void updateComment(String recipeId, String commentId, Comment comment);
+
+    Recipe findUserRecipe(String id, String authorId);
+
+    List<Recipe> findAllUserRecipe(String id);
 }

@@ -11,6 +11,8 @@ import com.recipe.book.api.services.UserService;
 import io.javalin.http.Context;
 import io.javalin.http.HttpStatus;
 
+import java.util.List;
+
 public class RecipeControllerImpl implements RecipeController {
 
     private final RecipeService recipeService;
@@ -25,25 +27,36 @@ public class RecipeControllerImpl implements RecipeController {
 
     @Override
     public void get(Context ctx) {
-        ctx.json(recipeService.findAll()).status(HttpStatus.OK);
+        String username = ctx.basicAuthCredentials().getUsername();
+        User recipeOwner = userService.findUserByName(username);
+        List<Recipe> recipes = recipeService.findAllUserRecipe(recipeOwner.getId());
+        ctx.json(recipes).status(HttpStatus.OK);
     }
 
     @Override
     public void getById(Context ctx) {
-        String id = ctx.pathParam("id");
-        ctx.json(recipeService.findById(id)).status(HttpStatus.OK);
+        String username = ctx.basicAuthCredentials().getUsername();
+        User recipeOwner = userService.findUserByName(username);
+        String recipeId = ctx.pathParam("id");
+        Recipe recipe = recipeService.findUserRecipe(recipeId, recipeOwner.getId());
+        ctx.json(recipe).status(HttpStatus.OK);
     }
 
     @Override
     public void getByIngredient(Context ctx) {
+        String username = ctx.basicAuthCredentials().getUsername();
+        User recipeOwner = userService.findUserByName(username);
         String ingredient = ctx.queryParam("ingredient");
-        ctx.json(recipeService.findByIngredient(ingredient)).status(HttpStatus.OK);
+        ctx.json(recipeService.findByIngredient(ingredient, recipeOwner.getId())).status(HttpStatus.OK);
     }
 
     @Override
     public void getBySearch(Context ctx) {
+        String username = ctx.basicAuthCredentials().getUsername();
+        User recipeOwner = userService.findUserByName(username);
         String search = ctx.queryParam("search");
-        ctx.json(recipeService.searchInTitleAndDescription(search)).status(HttpStatus.OK);
+        List<Recipe> recipe = recipeService.searchInTitleAndDescription(search, recipeOwner.getId());
+        ctx.json(recipe).status(HttpStatus.OK);
     }
 
     @Override
@@ -62,8 +75,10 @@ public class RecipeControllerImpl implements RecipeController {
     @Override
     public void put(Context ctx) {
         Recipe recipe = ctx.bodyAsClass(Recipe.class);
+        String username = ctx.basicAuthCredentials().getUsername();
+        User recipeOwner = userService.findUserByName(username);
         String id = ctx.pathParam("id");
-        recipeService.update(id, recipe);
+        recipeService.update(id, recipeOwner.getId(), recipe);
         ctx.status(HttpStatus.NO_CONTENT);
     }
 
@@ -71,10 +86,14 @@ public class RecipeControllerImpl implements RecipeController {
     public void delete(Context ctx) {
         String username = ctx.basicAuthCredentials().getUsername();
         String recipeId = ctx.pathParam("id");
-        Recipe recipe = recipeService.findById(recipeId);
+
+        User recipeOwner = userService.findUserByName(username);
+        Recipe recipe = recipeService.findUserRecipe(recipeId, recipeOwner.getId());
+
         if (!recipe.getComments().isEmpty()) {
             recipe.getComments().forEach(c -> commentService.delete(c.getId()));
         }
+
         recipeService.delete(recipeId);
         userService.removeRecipe(username, recipeId);
         ctx.status(HttpStatus.NO_CONTENT);
@@ -83,9 +102,11 @@ public class RecipeControllerImpl implements RecipeController {
     @Override
     public void postLike(Context ctx) {
         try {
-            Integer userId = Integer.parseInt(ctx.pathParam("userId"));
+            //TODO:integration between like and user
+            String username = ctx.basicAuthCredentials().getUsername();
+            User userThatLiked = userService.findUserByName(username);
             String recipeId = ctx.pathParam("id");
-            ctx.json(recipeService.addLike(userId, recipeId)).status(HttpStatus.CREATED);
+            ctx.json(recipeService.addLike(userThatLiked.getId(), recipeId)).status(HttpStatus.CREATED);
         } catch (NumberFormatException e) {
             throw new IdInvalidException("Id inválido!");
         }
@@ -94,7 +115,8 @@ public class RecipeControllerImpl implements RecipeController {
     @Override
     public void deleteLike(Context ctx) {
         try {
-            Integer userId = Integer.parseInt(ctx.pathParam("userId"));
+            String username = ctx.basicAuthCredentials().getUsername();
+            String userId = userService.findUserByName(username).getId();
             String recipeId = ctx.pathParam("id");
             recipeService.removeLike(userId, recipeId);
             ctx.status(HttpStatus.NO_CONTENT);

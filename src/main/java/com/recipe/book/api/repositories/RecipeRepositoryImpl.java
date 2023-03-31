@@ -14,8 +14,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static com.mongodb.client.model.Filters.eq;
-import static com.mongodb.client.model.Filters.regex;
+import static com.mongodb.client.model.Filters.*;
 
 public class RecipeRepositoryImpl implements RecipeRepository {
 
@@ -26,31 +25,20 @@ public class RecipeRepositoryImpl implements RecipeRepository {
     }
 
     @Override
-    public List<Recipe> findAll() {
-        List<Recipe> result = new ArrayList<>();
-        for (Recipe recipe : coll.find()) {
-            result.add(recipe);
-        }
-        if (result.isEmpty()) {
-            throw new ObjectNotFoundException("Nenhuma receita encontada!");
-        }
-        return result;
-    }
-
-    @Override
-    public Recipe findById(String id) {
-        Bson filter = eq("_id", id);
+    public Recipe findUserRecipe(String recipeId, String authorId) {
+        Bson filter = Filters.and(eq("_id", recipeId), eq("authorId", authorId));
         Recipe recipe = coll.find(filter).first();
         if (recipe == null) {
-            throw new ObjectNotFoundException("Receita id: " + id + " não encontrada!");
+            throw new ObjectNotFoundException("Receita id: " + recipeId + " não encontrada!");
         }
         return recipe;
     }
 
     @Override
-    public List<Recipe> findByIngredient(String ingredient) {
+    public List<Recipe> findByIngredient(String ingredient, String authorId) {
         List<Recipe> result = new ArrayList<>();
-        for (Recipe recipe : coll.find().filter(regex("ingredients", ingredient))) {
+        Bson filter = Filters.and(regex("ingredients", ingredient), eq("authorId", authorId));
+        for (Recipe recipe : coll.find(filter)) {
             result.add(recipe);
         }
         if (result.isEmpty()) {
@@ -61,15 +49,16 @@ public class RecipeRepositoryImpl implements RecipeRepository {
     }
 
     @Override
-    public List<Recipe> searchInTitleAndDescription(String search) {
+    public List<Recipe> searchInTitleAndDescription(String search, String authorId) {
         List<Recipe> result = new ArrayList<>();
-        for (Recipe recipe : coll.find().filter(regex("title", search))) {
+
+        Bson filter = Filters.and(
+                or(regex("title", search), regex("description", search)),
+                eq("authorId", authorId)
+        );
+
+        for (Recipe recipe : coll.find(filter)) {
             result.add(recipe);
-        }
-        for (Recipe recipe : coll.find().filter(regex("description", search))) {
-            if (!result.contains(recipe)) {
-                result.add(recipe);
-            }
         }
         if (result.isEmpty()) {
             throw new ObjectNotFoundException("Nenhuma receita encontada!");
@@ -87,8 +76,8 @@ public class RecipeRepositoryImpl implements RecipeRepository {
     }
 
     @Override
-    public Recipe update(String id, Recipe recipe) {
-        Bson filter = eq("_id", id);
+    public Recipe update(String id, String authorId, Recipe recipe) {
+        Bson filter = Filters.and(eq("_id", id), eq("authorId", authorId));
         Recipe updatedRecipe = coll.findOneAndReplace(filter, recipe);
         if (updatedRecipe == null) {
             throw new ObjectNotFoundException("Não foi possível atualizar a receita. Id: " + id + " inexistente!");
@@ -106,31 +95,32 @@ public class RecipeRepositoryImpl implements RecipeRepository {
     }
 
     @Override
-    public Recipe addLike(Integer userId, String recipeId) {
+    public Recipe addLike(String authorId, String recipeId) {
         Recipe recipe = findById(recipeId);
-        if (recipe.getLikes().contains(userId)) {
-            throw new ExistsUserIdException("Usuário id: " + userId + " já curtiu a receita id: " + recipeId + "!");
+        if (recipe.getLikes().contains(authorId)) {
+            throw new ExistsUserIdException("Usuário id: " + authorId + " já curtiu a receita id: " + recipeId + "!");
         }
-        recipe.getLikes().add(userId);
-        update(recipeId, recipe);
+        recipe.getLikes().add(authorId);
+        update(recipeId, authorId, recipe);
         return findById(recipeId);
     }
 
     @Override
-    public void removeLike(Integer userId, String recipeId) {
+    public void removeLike(String authorId, String recipeId) {
         Recipe recipe = findById(recipeId);
-        if (!recipe.getLikes().contains(userId)) {
-            throw new ObjectNotFoundException("O usuário id: " + userId + " não curtiu a receita id: " + recipeId + "!");
+        if (!recipe.getLikes().contains(authorId)) {
+            throw new ObjectNotFoundException("O usuário id: " + authorId + " não curtiu a receita id: " + recipeId + "!");
         }
-        recipe.getLikes().remove(userId);
-        update(recipeId, recipe);
+        recipe.getLikes().remove(authorId);
+        update(recipeId, authorId, recipe);
     }
 
     @Override
     public Recipe addComment(String recipeId, Comment comment) {
+        //TODO:implementation integration between comment and user
         Recipe recipe = findById(recipeId);
         recipe.getComments().add(comment);
-        return update(recipeId, recipe);
+        return null; //update(recipeId, recipe);
     }
 
     @Override
@@ -142,12 +132,32 @@ public class RecipeRepositoryImpl implements RecipeRepository {
 
     @Override
     public void removeComment(String recipeId, String commentId) {
+        //TODO:implementation integration between user and comment
         Recipe recipe = findById(recipeId);
         if (!commentExists(recipe, commentId)) {
             throw new ObjectNotFoundException("Comentário id: " + commentId + " não encontrado!");
         }
         recipe.getComments().removeIf(c -> c.getId().equals(commentId));
-        update(recipeId, recipe);
+        //update(recipeId, recipe);
+    }
+
+    @Override
+    public List<Recipe> findAllUserRecipe(String userId) {
+        List<Recipe> result = new ArrayList<>();
+        Bson filter = Filters.eq("authorId", userId);
+        for (Recipe recipe : coll.find(filter)) {
+            result.add(recipe);
+        }
+        return result;
+    }
+
+    private Recipe findById(String recipeId) {
+        Bson filter = Filters.eq("_id", recipeId);
+        Recipe recipe = coll.find(filter).first();
+        if (recipe == null) {
+            throw new ObjectNotFoundException("Receita id: " + recipeId + " não encontrada!");
+        }
+        return recipe;
     }
 
     private boolean commentExists(Recipe recipe, String commentId) {

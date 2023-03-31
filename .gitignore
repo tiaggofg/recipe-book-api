@@ -1,6 +1,9 @@
-# Properties file
+# Properties file´
 *.properties
 !src/main/resources/simplelogger.properties
+
+# Target path
+target/*
 
 # Maven files
 target/maven-archiver/*

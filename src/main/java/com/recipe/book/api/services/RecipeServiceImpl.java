@@ -1,45 +1,32 @@
 package com.recipe.book.api.services;
 
-import com.mongodb.BasicDBObject;
-import com.recipe.book.api.log.Log;
 import com.recipe.book.api.repositories.RecipeRepository;
 import com.recipe.book.api.model.Comment;
 import com.recipe.book.api.model.Recipe;
 
-import java.io.IOException;
 import java.util.List;
 
 public class RecipeServiceImpl implements RecipeService {
 
-    private RecipeRepository recipeRepository;
+    private final RecipeRepository recipeRepository;
 
     public RecipeServiceImpl(RecipeRepository recipeRepository) {
         this.recipeRepository = recipeRepository;
     }
 
     @Override
-    public List<Recipe> findAll() {
-        return recipeRepository.findAll();
+    public Recipe update(String id, String authorId, Recipe recipe) {
+        return recipeRepository.update(id, authorId, recipe);
     }
 
     @Override
-    public Recipe update(String id, Recipe recipe) {
-        return recipeRepository.update(id, recipe);
+    public List<Recipe> findByIngredient(String ingredient, String authorId) {
+        return recipeRepository.findByIngredient(ingredient, authorId);
     }
 
     @Override
-    public Recipe findById(String id) {
-        return recipeRepository.findById(id);
-    }
-
-    @Override
-    public List<Recipe> findByIngredient(String ingredient) {
-        return recipeRepository.findByIngredient(ingredient);
-    }
-
-    @Override
-    public List<Recipe> searchInTitleAndDescription(String search) {
-        return recipeRepository.searchInTitleAndDescription(search);
+    public List<Recipe> searchInTitleAndDescription(String search, String authorId) {
+        return recipeRepository.searchInTitleAndDescription(search, authorId);
     }
 
     @Override
@@ -53,13 +40,13 @@ public class RecipeServiceImpl implements RecipeService {
     }
 
     @Override
-    public Recipe addLike(Integer userId, String recipeId) {
-        return recipeRepository.addLike(userId, recipeId);
+    public Recipe addLike(String authorId, String recipeId) {
+        return recipeRepository.addLike(authorId, recipeId);
     }
 
     @Override
-    public void removeLike(Integer userId, String recipeId) {
-        recipeRepository.removeLike(userId, recipeId);
+    public void removeLike(String authorId, String recipeId) {
+        recipeRepository.removeLike(authorId, recipeId);
     }
 
     @Override
@@ -70,6 +57,16 @@ public class RecipeServiceImpl implements RecipeService {
     @Override
     public void updateComment(String recipeId, String commentId, Comment comment) {
         recipeRepository.updateComment(recipeId, commentId, comment);
+    }
+
+    @Override
+    public Recipe findUserRecipe(String recipeId, String authorId) {
+        return recipeRepository.findUserRecipe(recipeId, authorId);
+    }
+
+    @Override
+    public List<Recipe> findAllUserRecipe(String userId) {
+        return recipeRepository.findAllUserRecipe(userId);
     }
 
     @Override

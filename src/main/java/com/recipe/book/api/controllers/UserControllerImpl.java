@@ -1,6 +1,7 @@
 package com.recipe.book.api.controllers;
 
 import com.recipe.book.api.exceptions.DefaultError;
+import com.recipe.book.api.exceptions.InvalidCredentialsException;
 import com.recipe.book.api.log.Log;
 import com.recipe.book.api.model.User;
 import com.recipe.book.api.services.UserService;
@@ -25,13 +26,12 @@ public class UserControllerImpl implements UserController {
     public void authenticate(Handler handler, Context ctx, Set<? extends RouteRole> routeRoles) {
         try {
             BasicAuthCredentials authCredentials = ctx.basicAuthCredentials();
-            if (ctx.path().equals("/user") && ctx.method() == HandlerType.POST) {
+            if ((ctx.path().equals("/authenticate") || ctx.path().equals("/user")) && ctx.method() == HandlerType.POST) {
                 handler.handle(ctx);
-            } else if (authCredentials != null && service.isValidCredentials(authCredentials)) {
+            } else if (service.isValidCredentials(authCredentials)) {
                 handler.handle(ctx);
             } else {
-                Log.info("Acesso negado para: " + ctx.req().getRemoteHost(), UserControllerImpl.class);
-                ctx.status(HttpStatus.FORBIDDEN);
+                throw new InvalidCredentialsException("Usuário ou senha inválidos");
             }
         } catch (Exception e) {
             Log.error(e.getMessage(), UserControllerImpl.class, e);

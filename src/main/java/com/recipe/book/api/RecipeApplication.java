@@ -21,6 +21,7 @@ import io.javalin.Javalin;
 import io.javalin.http.Context;
 import io.javalin.http.HttpStatus;
 import io.javalin.plugin.bundled.CorsPluginConfig;
+import io.javalin.security.BasicAuthCredentials;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -65,6 +66,16 @@ public class RecipeApplication {
             path("/", () -> {
                 get(RecipeApplication::forbidden);
             });
+            path("/authenticate", () -> {
+                post(ctx -> {
+                    BasicAuthCredentials authCredentials = ctx.basicAuthCredentials();
+                    if (userService.isValidCredentials(authCredentials)) {
+                        ctx.status(HttpStatus.OK);
+                    } else {
+                        throw new InvalidCredentialsException("Usuário ou senha inválidos");
+                    }
+                });
+            });
             path("/user", () -> {
                post(userController::postUser);
                path("/{userId}", () -> {
@@ -108,8 +119,8 @@ public class RecipeApplication {
         });
 
         app.exception(InvalidCredentialsException.class, (e, ctx) -> {
-            Log.error(e.getMessage(), RecipeApplication.class);
-            HttpStatus status = HttpStatus.UNAUTHORIZED;
+            Log.info("Acesso negado para: " + ctx.ip(), UserControllerImpl.class);
+            HttpStatus status = HttpStatus.FORBIDDEN;
             DefaultError error = new DefaultError(String.valueOf(System.currentTimeMillis()), status.toString(), e.getMessage(), ctx.path());
             ctx.json(error).status(status);
         });
@@ -153,7 +164,7 @@ public class RecipeApplication {
         });
     }
 
-    public static void forbidden(Context ctx) {
+    private static void forbidden(Context ctx) {
         ctx.status(HttpStatus.FORBIDDEN);
     }
 }

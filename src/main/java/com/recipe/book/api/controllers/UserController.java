@@ -9,9 +9,14 @@ import java.util.Set;
 public interface UserController {
 
     void getUserById(Context ctx);
+
     void getUserByName(Context ctx);
+
     void putUserByName(Context ctx);
+
     void postUser(Context ctx);
+
     void deleteUserByName(Context ctx);
+
     void authenticate(Handler handler, Context context, Set<? extends RouteRole> routeRoles) throws Exception;
 }

@@ -86,7 +86,6 @@ public class RecipeApplication {
                    put(userController::putUserByName);
                    delete(userController::deleteUserByName);
                });
-
             });
             path("recipe", () -> {
                 get(recipeController::get);
@@ -120,7 +119,7 @@ public class RecipeApplication {
 
         app.exception(InvalidCredentialsException.class, (e, ctx) -> {
             Log.info("Acesso negado para: " + ctx.ip(), UserControllerImpl.class);
-            HttpStatus status = HttpStatus.FORBIDDEN;
+            HttpStatus status = HttpStatus.UNAUTHORIZED;
             DefaultError error = new DefaultError(String.valueOf(System.currentTimeMillis()), status.toString(), e.getMessage(), ctx.path());
             ctx.json(error).status(status);
         });

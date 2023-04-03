@@ -41,7 +41,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean isValidCredentials(BasicAuthCredentials authCredentials) {
         if (authCredentials == null) {
-            throw new InvalidCredentialsException("Credenciais inválidas!");
+            throw new InvalidCredentialsException("Usuário ou senha inválidos!");
         }
         String userName = authCredentials.getUsername();
         String password = authCredentials.getPassword();

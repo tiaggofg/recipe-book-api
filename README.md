@@ -1,34 +1,13 @@
 <h1 align="center"><b>Recipe Book API</b></h1>
 
-Esse é um fork do projeto <a href="https://github.com/tiaggofg/zord-recipe-api">Zord Recipe API</a> e se trata de uma API CRUD de receitas conforme esquema abaixo
-
-```json
-{
-  "title": "Bolo de chocolate",
-  "description": "Bolo de chocolate caseiro",
-  "likes": [
-    "123",
-    "456"
-  ],
-  "ingredients": [
-    "ovo",
-    "chocolate"
-  ],
-  "comments": [
-    {
-      "_id": "5bc6a737953114503ce9cd7f",
-      "comment": "Muito gostoso!"
-    }
-  ]
-}
-```
+Esse é um fork do projeto <a href="https://github.com/tiaggofg/zord-recipe-api">Zord Recipe API</a> e se trata de uma API CRUD de para salvar e compartilhar receitas.
 
 O fork foi realizado para implementar novas funcionalidades a API, como cadastro de usuários, autenticação e integração com o <a href="https://openai.com/blog/chatgpt">Chat GPT</a>.
 
 <h2><b>Como utilizar a API?</b></h2>
 
-Para utilizar/testar a API é preciso clonar esse repositório e compilar o projeto utilizando maven. Lembrando que antes disso é preciso ter o arquivo de configurações
- `recipe-book.properties` na pasta `resources`. Você pode saber mais na seção <a href="#properties-file">Arquivo de configuração</a>".
+Para utilizar/testar a API é preciso clonar esse repositório e compilar o projeto utilizando maven. Antes disso é preciso ter o arquivo de configurações
+ `recipe-book.properties` na pasta `resources`. Você pode saber mais na seção <a href="#properties-file">Arquivo de configuração</a>.
 
 Tendo o arquivo `recipe-book.properties` preenchido com os dados necessários basta exeuctar o comando abaixo
 
@@ -42,15 +21,76 @@ Que um arquivo `.jar` será gerado na pasta `target` e poderá ser executado com
 java -jar recipe-book-api.jar
 ```
 
-Ressalto que para gerar o arquivo `jar` e executá-lo é preciso ter o maven assim como o Java versão 11 instalado. Caso tenha dificuldades
+Ressalto que para gerar e executar o arquivo `jar` é preciso ter o maven assim como o Java versão 11 instalado. Caso tenha dificuldades
 entre em contato via <a href="mailto:tiago.godoy@proton.me">email</a> que estarei disposto a ajudá-lo.
 
 <h2 id="properties-file">Arquivo de configuração</h2>
 
-As informações referente a acesso a banco de dados e qual porta a aplicação devem ser preenchidas no arquivo `recipe-book.properties` na pasta `resource`.
+As informações referente a acesso a banco de dados e qual porta a aplicação vai subir devem ser preenchidas no arquivo `recipe-book.properties` na pasta `resources`.
 Nessa mesma pasta há um arquivo <i>sample</i> de como as informações devem ser preenchidas. Ressalto que a aplicação não irá subir sem esse arquivo e uma exeção será lançada.
 
 <h2><b>Endpoints Implementados</b></h2>
+
+<h3>POST /authenticate</h3>
+
+Esse endponint tem a finalidade de um cliente, como um frontend ou outra API, validar se as credenciais do usuário são válidas para assim inciar uma
+sessão para o mesmo.
+
+O método de autenticação utilizado em todos os endpoints é o <a href="https://datatracker.ietf.org/doc/html/rfc7617">basic auth</a>
+qual consiste no envio do usuário e senha encondados em <a href="https://pt.wikipedia.org/wiki/Base64">Base64</a> no header de cada requisição.
+Na linguagem Javascript é possível utilizar o método `btoa()` para encondar strings em base64.
+
+Conforme disposto no <a href="https://datatracker.ietf.org/doc/html/rfc7617">RFC 7617</a> o usuário e a senha devem ser concatenados com `:`
+entre eles `username:password` e posteriormente encondados em base64 para que sejam enviados no header HTTP chamado `Authorization` cujo valor é a palavra
+`Basic` seguido da string em base64. Conforme exemplo abaixo
+
+```
+POST /authenticate
+Authorization: Basic <BASE64(username:password)>
+```
+
+Se utilizarmos a função Javascript `btoa` e passar como argumento `username:password`, teremos uma string em base64 como output
+
+```
+input: btoa("username:password")
+output: dXNlcm5hbWU6cGFzc3dvcmQ=
+```
+
+E essa string que deve ser utilizada nas requisições. No caso de `/authenticate`
+
+```
+POST /authenticate
+Authorization: Basic dXNlcm5hbWU6cGFzc3dvcmQ=
+```
+
+Se o usuário e senha forem válidos será retornado um HTTP status 200 (OK). Do contrário, é retornado um HTTP status 401 (Not Authorized)
+com um response body conforme exemplo abaixo
+
+```json
+{
+  "timestamp": "1680550301878",
+  "status": "401 Unauthorized",
+  "error": "Usuário ou senha inválidos!",
+  "path": "/authenticate"
+}
+```
+
+Conforme mencionado, esse endpoint deve ser utilizado para validar se as credenciais do usuário são válidas. No entanto, é necessário
+que seja o header `Authorization` seja enviado em todas as requisições para que sejam aceitas pelo servidor.
+
+<!--
+
+<h3>POST /user</h3>
+
+<h3>GET /user/{userId}</h3>
+
+<h3>GET /user/{userName}</h3>
+
+<h3>PUT /user/{userName}</h3>
+
+<h3>DELETE /user/{userName}</h3>
+
+-->
 
 <h3>POST /recipe/</h3>
 
@@ -58,11 +98,28 @@ Endpoint utilizado para cadastrar uma nova receita no banco de dados. Recebe um 
 
 ```json
 {
-  "title": "Bolo de chocolate",
-  "description": "Bolo de chocolate caseiro",
+  "title": "Panquecas americanas",
+  "description": "Uma receita clássica e deliciosa para um café da manhã perfeito",
   "ingredients": [
-    "ovo",
-    "chocolate"
+    "1 e 1/2 xícaras de farinha de trigo",
+    "3 e 1/2 colheres de chá de fermento em pó",
+    "1 colher de chá de sal",
+    "1 colher de sopa de açúcar",
+    "1 e 1/4 xícaras de leite",
+    "1 ovo",
+    "3 colheres de sopa de manteiga derretida",
+    "Óleo ou manteiga para untar a frigideira"
+  ],
+  "preparation": [
+    "Em uma tigela grande, misture a farinha de trigo, o fermento em pó, o sal e o açúcar.",
+    "Em outra tigela, bata o leite, o ovo e a manteiga derretida.",
+    "Adicione os ingredientes líquidos aos ingredientes secos e misture bem até obter uma massa homogênea.",
+    "Aqueça uma frigideira antiaderente em fogo médio e unte com óleo ou manteiga.",
+    "Com uma concha, coloque porções da massa na frigideira, deixando espaço suficiente entre elas.",
+    "Cozinhe por cerca de 2 a 3 minutos, ou até que a superfície da panqueca esteja cheia de bolhas e as bordas comecem a se soltar.",
+    "Vire a panqueca com uma espátula e cozinhe do outro lado por mais 1 a 2 minutos, ou até que esteja dourada.",
+    "Repita o processo com o restante da massa, untando a frigideira a cada vez que fizer uma nova panqueca.",
+    "Sirva quente com manteiga, mel, xarope de bordo ou outros acompanhamentos de sua preferência!"
   ]
 }
 ```

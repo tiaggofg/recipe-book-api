@@ -1,4 +1,9 @@
+FROM maven:3.6-jdk-11 AS build
+COPY . .
+RUN mvn clean package
+
 FROM eclipse-temurin:11-alpine
-COPY target/recipe-book-api-0.0.3-SNAPSHOT.jar /recipe-book-api-0.0.3-SNAPSHOT.jar
+WORKDIR /app
+COPY /target/*.jar /app/recipe-book-api.jar
 EXPOSE 7000
-ENTRYPOINT ["java", "-jar", "recipe-book-api-0.0.3-SNAPSHOT.jar"]
+ENTRYPOINT ["java", "-jar", "recipe-book-api.jar"]

@@ -78,10 +78,29 @@ com um response body conforme exemplo abaixo
 Conforme mencionado, esse endpoint deve ser utilizado para validar se as credenciais do usuário são válidas. No entanto, é necessário
 que seja o header `Authorization` seja enviado em todas as requisições para que sejam aceitas pelo servidor.
 
-<!--
-
 <h3>POST /user</h3>
 
+Endpoint utilizado para realizar o cadastro de um usuário. Esse é o úncio endpoint que não precisa de autenticação.
+
+Para cadastrar um usuário é necessário enviar a seguinte requisição
+
+```
+POST /authenticate
+Content-Type: application/json
+
+{
+  "email":"heloisa.figueiredo@mail.com",
+  "firstName":"Heloisa",
+  "lastName":"Figueiredo",
+  "password":"UbVw6xDZoT3ESH",
+  "phoneNumber":"(43) 98460-8554",
+  "username":"heloisa.figueiredo"
+}
+```
+
+Que será retornar HTTP status 200 (ok) sinalizando que o cadastro foi realizado com sucesso.
+
+<!--
 <h3>GET /user/{userId}</h3>
 
 <h3>GET /user/{userName}</h3>
@@ -89,7 +108,6 @@ que seja o header `Authorization` seja enviado em todas as requisições para qu
 <h3>PUT /user/{userName}</h3>
 
 <h3>DELETE /user/{userName}</h3>
-
 -->
 
 <h3>POST /recipe/</h3>

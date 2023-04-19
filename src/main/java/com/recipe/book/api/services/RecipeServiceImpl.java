@@ -1,5 +1,6 @@
 package com.recipe.book.api.services;
 
+import com.recipe.book.api.model.User;
 import com.recipe.book.api.repositories.RecipeRepository;
 import com.recipe.book.api.model.Comment;
 import com.recipe.book.api.model.Recipe;
@@ -40,13 +41,13 @@ public class RecipeServiceImpl implements RecipeService {
     }
 
     @Override
-    public Recipe addLike(String authorId, String recipeId) {
-        return recipeRepository.addLike(authorId, recipeId);
+    public Recipe addLike(User author, String recipeId) {
+        return recipeRepository.addLike(author, recipeId);
     }
 
     @Override
-    public void removeLike(String authorId, String recipeId) {
-        recipeRepository.removeLike(authorId, recipeId);
+    public void removeLike(User author, String recipeId) {
+        recipeRepository.removeLike(author, recipeId);
     }
 
     @Override

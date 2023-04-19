@@ -3,10 +3,13 @@ package com.recipe.book.api.repositories;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
+import com.mongodb.client.model.Updates;
 import com.recipe.book.api.exceptions.ExistsUserIdException;
 import com.recipe.book.api.exceptions.ObjectNotFoundException;
 import com.recipe.book.api.model.Comment;
+import com.recipe.book.api.model.Like;
 import com.recipe.book.api.model.Recipe;
+import com.recipe.book.api.model.User;
 import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
 
@@ -95,24 +98,35 @@ public class RecipeRepositoryImpl implements RecipeRepository {
     }
 
     @Override
-    public Recipe addLike(String authorId, String recipeId) {
+    public Recipe addLike(User author, String recipeId) {
         Recipe recipe = findById(recipeId);
-        if (recipe.getLikes().contains(authorId)) {
-            throw new ExistsUserIdException("Usuário id: " + authorId + " já curtiu a receita id: " + recipeId + "!");
+        boolean recipeContainsLike = recipe.getLikes()
+                .stream()
+                .anyMatch(l -> l.getAuthorId().equals(author.getId()) && l.getUserName().equals(author.getUserName()));
+
+        if (recipeContainsLike) {
+            throw new ExistsUserIdException("Usuário id: " + author.getId() + " já curtiu a receita id: " + recipeId + "!");
         }
-        recipe.getLikes().add(authorId);
-        update(recipeId, authorId, recipe);
+
+        //TODO:decouple this code and validate if the return of the findOneAndUpdate() method is not null.
+        Bson update = Updates.push("likes", new Like(author.getUserName(), author.getId()));
+        Bson filter = Filters.eq("_id", recipeId);
+        coll.findOneAndUpdate(filter, update);
+
         return findById(recipeId);
     }
 
     @Override
-    public void removeLike(String authorId, String recipeId) {
+    public void removeLike(User author, String recipeId) {
         Recipe recipe = findById(recipeId);
-        if (!recipe.getLikes().contains(authorId)) {
-            throw new ObjectNotFoundException("O usuário id: " + authorId + " não curtiu a receita id: " + recipeId + "!");
+        if (!recipe.getLikes().stream().anyMatch(x -> x.getAuthorId().equals(author.getId()))) {
+            throw new ObjectNotFoundException("O usuário id: " + author.getId() + " não curtiu a receita id: " + recipeId + "!");
         }
-        recipe.getLikes().remove(authorId);
-        update(recipeId, authorId, recipe);
+
+        //TODO:decouple this code and validate if the return of the findOneAndUpdate() method is not null.
+        Bson update = Updates.pull("likes", new Like(author.getUserName(), author.getId()));
+        Bson filter = Filters.eq("_id", recipeId);
+        coll.findOneAndUpdate(filter, update);
     }
 
     @Override

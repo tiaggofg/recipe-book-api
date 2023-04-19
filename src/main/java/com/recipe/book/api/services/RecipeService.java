@@ -2,6 +2,7 @@ package com.recipe.book.api.services;
 
 import com.recipe.book.api.model.Comment;
 import com.recipe.book.api.model.Recipe;
+import com.recipe.book.api.model.User;
 
 import java.util.List;
 
@@ -15,13 +16,13 @@ public interface RecipeService {
 
     Recipe create(Recipe recipe);
 
-    Recipe addLike(String authorId, String recipeId);
+    Recipe addLike(User author, String recipeId);
 
     Recipe addComment(String recipeId, Comment comment);
 
     void delete(String id);
 
-    void removeLike(String authorId, String recipeId);
+    void removeLike(User author, String recipeId);
 
     void removeComment(String recipeId, String commentId);
 

@@ -101,28 +101,21 @@ public class RecipeControllerImpl implements RecipeController {
 
     @Override
     public void postLike(Context ctx) {
-        try {
-            //TODO:integration between like and user
-            String username = ctx.basicAuthCredentials().getUsername();
-            User userThatLiked = userService.findUserByName(username);
-            String recipeId = ctx.pathParam("id");
-            ctx.json(recipeService.addLike(userThatLiked.getId(), recipeId)).status(HttpStatus.CREATED);
-        } catch (NumberFormatException e) {
-            throw new IdInvalidException("Id inválido!");
-        }
+        //TODO:integration between like and user
+        String username = ctx.basicAuthCredentials().getUsername();
+        User currentUser = userService.findUserByName(username);
+        String recipeId = ctx.pathParam("id");
+        ctx.json(recipeService.addLike(currentUser, recipeId)).status(HttpStatus.CREATED);
     }
 
     @Override
     public void deleteLike(Context ctx) {
-        try {
-            String username = ctx.basicAuthCredentials().getUsername();
-            String userId = userService.findUserByName(username).getId();
-            String recipeId = ctx.pathParam("id");
-            recipeService.removeLike(userId, recipeId);
-            ctx.status(HttpStatus.NO_CONTENT);
-        } catch (NumberFormatException e) {
-            throw new IdInvalidException("Id inválido!");
-        }
+        //TODO:integration between like and user
+        String username = ctx.basicAuthCredentials().getUsername();
+        User currentUser = userService.findUserByName(username);
+        String recipeId = ctx.pathParam("id");
+        recipeService.removeLike(currentUser, recipeId);
+        ctx.status(HttpStatus.NO_CONTENT);
     }
 
     @Override

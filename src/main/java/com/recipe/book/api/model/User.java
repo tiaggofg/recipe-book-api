@@ -18,6 +18,7 @@ public class User {
     private String email;
     private String phoneNumber;
     private List<String> recipeIds = new ArrayList<>();
+    private List<String> likedRecipesList = new ArrayList<>();
 
     public User() {
     }
@@ -94,6 +95,14 @@ public class User {
 
     public void setRecipeIds(List<String> recipeIds) {
         this.recipeIds = recipeIds;
+    }
+
+    public List<String> getLikedRecipesList() {
+        return likedRecipesList;
+    }
+
+    public void setLikedRecipesList(List<String> likedRecipesList) {
+        this.likedRecipesList = likedRecipesList;
     }
 
     @Override

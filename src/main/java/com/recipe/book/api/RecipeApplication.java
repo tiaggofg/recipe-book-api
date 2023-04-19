@@ -101,10 +101,8 @@ public class RecipeApplication {
                     put(recipeController::put);
                     delete(recipeController::delete);
                     path("like", () -> {
-                        path("{userId}", () -> {
-                            post(recipeController::postLike);
-                            delete(recipeController::deleteLike);
-                        });
+                        post(recipeController::postLike);
+                        delete(recipeController::deleteLike);
                     });
                     path("comment", () -> {
                         post(recipeController::postComment);

@@ -19,8 +19,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User findUserByName(String userName) {
-        return repository.findUserByName(userName);
+    public User findByUsername(String userName) {
+        return repository.findByUsername(userName);
     }
 
     @Override
@@ -45,7 +45,7 @@ public class UserServiceImpl implements UserService {
         }
         String userName = authCredentials.getUsername();
         String password = authCredentials.getPassword();
-        User user = repository.findUserByName(userName);
+        User user = repository.findByUsername(userName);
         return user != null && user.getPassword().equals(password);
     }
 
@@ -57,5 +57,15 @@ public class UserServiceImpl implements UserService {
     @Override
     public void removeRecipe(String username, String recipeId) {
         repository.removeRecipe(username, recipeId);
+    }
+
+    @Override
+    public void addRecipeToListLike(User currentUser, String recipeId) {
+        repository.addRecipeToListLike(currentUser, recipeId);
+    }
+
+    @Override
+    public void removeRecipeFromListLike(User currentUser, String recipeId) {
+        repository.removeRecipeFromListLike(currentUser, recipeId);
     }
 }

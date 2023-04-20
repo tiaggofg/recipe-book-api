@@ -7,7 +7,7 @@ public interface UserService {
 
     User findUser(String userId);
 
-    User findUserByName(String userName);
+    User findByUsername(String userName);
 
     User updateUser(String userName, User user);
 
@@ -20,4 +20,8 @@ public interface UserService {
     void addRecipe(String username, String id);
 
     void removeRecipe(String username, String recipeId);
+
+    void addRecipeToListLike(User currentUser, String recipeId);
+
+    void removeRecipeFromListLike(User currentUser, String recipeId);
 }

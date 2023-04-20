@@ -18,6 +18,8 @@ public class User {
     private String email;
     private String phoneNumber;
     private List<String> recipeIds = new ArrayList<>();
+
+    @BsonProperty(value = "likedRecipes")
     private List<String> likedRecipesList = new ArrayList<>();
 
     public User() {

@@ -40,7 +40,7 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public User findUserByName(String userName) {
+    public User findByUsername(String userName) {
         return coll.find(Filters.eq("username", userName), User.class).first();
     }
 
@@ -56,5 +56,19 @@ public class UserRepositoryImpl implements UserRepository {
         Bson filter = Filters.eq("username", username);
         Bson update = Updates.pull("recipeIds", recipeId);
         coll.updateOne(filter, update);
+    }
+
+    @Override
+    public void addRecipeToListLike(User currentUser, String recipeId) {
+        Bson filter = Filters.eq("_id", currentUser.getId());
+        Bson update = Updates.push("likedRecipes", recipeId);
+        coll.findOneAndUpdate(filter, update);
+    }
+
+    @Override
+    public void removeRecipeFromListLike(User currentUser, String recipeId) {
+        Bson filter = Filters.eq("_id", currentUser.getId());
+        Bson update = Updates.pull("likedRecipes", recipeId);
+        coll.findOneAndUpdate(filter, update);
     }
 }

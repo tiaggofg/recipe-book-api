@@ -42,7 +42,7 @@ public class UserControllerImpl implements UserController {
     @Override
     public void getUserByName(Context ctx) {
         String userName = ctx.pathParam("userName");
-        User user = service.findUserByName(userName);
+        User user = service.findByUsername(userName);
         ctx.status(HttpStatus.OK).json(user);
     }
 

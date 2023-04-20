@@ -12,9 +12,13 @@ public interface UserRepository {
 
     void deleteUser(String userName);
 
-    User findUserByName(String userName);
+    User findByUsername(String userName);
 
     void addRecipe(String username, String recipeId);
 
     void removeRecipe(String username, String recipeId);
+
+    void addRecipeToListLike(User currentUser, String recipeId);
+
+    void removeRecipeFromListLike(User currentUser, String recipeId);
 }

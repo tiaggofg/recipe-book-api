@@ -10,6 +10,8 @@ public interface RecipeRepository {
 
     Recipe findUserRecipe(String id, String authorId);
 
+    Recipe findById(String recipeId);
+
     List<Recipe> findByIngredient(String ingredient, String authorId);
 
     List<Recipe> searchInTitleAndDescription(String search, String authorId);
@@ -18,15 +20,15 @@ public interface RecipeRepository {
 
     Recipe create(Recipe recipe);
 
-    Recipe addLike(User author, String recipeId);
+    Recipe addLike(User currentUser, String recipeId);
+
+    Recipe removeLike(User currentUser, String recipeId);
 
     Recipe addComment(String recipeId, Comment comment);
 
     Recipe updateComment(String recipeId, String commentId, Comment comment);
 
     void delete(String id);
-
-    void removeLike(User author, String recipeId);
 
     void removeComment(String recipeId, String commentId);
 

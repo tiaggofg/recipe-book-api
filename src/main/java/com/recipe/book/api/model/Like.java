@@ -1,35 +1,31 @@
 package com.recipe.book.api.model;
 
-import org.bson.codecs.pojo.annotations.BsonProperty;
-
 public class Like {
 
-    private String authorId;
-
-    @BsonProperty(value = "username")
-    private String userName;
+    private String userId;
+    private String username;
 
     public Like() {
     }
 
-    public Like(String userName, String authorId) {
-        this.authorId = authorId;
-        this.userName = userName;
+    public Like(String username, String userId) {
+        this.userId = userId;
+        this.username = username;
     }
 
-    public String getAuthorId() {
-        return authorId;
+    public String getUserId() {
+        return userId;
     }
 
-    public void setAuthorId(String authorId) {
-        this.authorId = authorId;
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
-    public String getUserName() {
-        return userName;
+    public String getUsername() {
+        return username;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public void setUsername(String username) {
+        this.username = username;
     }
 }

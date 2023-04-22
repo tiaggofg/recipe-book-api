@@ -1,6 +1,8 @@
 package com.recipe.book.api.services;
 
 import com.recipe.book.api.exceptions.InvalidCredentialsException;
+import com.recipe.book.api.exceptions.UserLikedRecipeException;
+import com.recipe.book.api.exceptions.UserNotLikeRecipeException;
 import com.recipe.book.api.model.User;
 import com.recipe.book.api.repositories.UserRepository;
 import io.javalin.security.BasicAuthCredentials;
@@ -61,11 +63,17 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void addRecipeToListLike(User currentUser, String recipeId) {
+        if (currentUser.getLikedRecipesList().contains(recipeId)) {
+            throw new UserLikedRecipeException("User id: " + currentUser.getId() + " already liked the recipe!");
+        }
         repository.addRecipeToListLike(currentUser, recipeId);
     }
 
     @Override
     public void removeRecipeFromListLike(User currentUser, String recipeId) {
+        if (!currentUser.getLikedRecipesList().contains(recipeId)) {
+            throw new UserNotLikeRecipeException("User id: " + currentUser.getId() + " did not like the recipe!");
+        }
         repository.removeRecipeFromListLike(currentUser, recipeId);
     }
 }

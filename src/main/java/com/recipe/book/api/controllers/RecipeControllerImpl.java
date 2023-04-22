@@ -99,24 +99,27 @@ public class RecipeControllerImpl implements RecipeController {
     }
 
     @Override
-    public void postLike(Context ctx) {
-        //TODO:integration between like and user
+    public void like(Context ctx) {
         String username = ctx.basicAuthCredentials().getUsername();
         User currentUser = userService.findByUsername(username);
         String recipeId = ctx.pathParam("id");
+
         userService.addRecipeToListLike(currentUser, recipeId);
-        ctx.json(recipeService.addLike(currentUser, recipeId)).status(HttpStatus.CREATED);
+        Recipe recipeLiked = recipeService.addLike(currentUser, recipeId);
+
+        ctx.json(recipeLiked).status(HttpStatus.CREATED);
     }
 
     @Override
-    public void deleteLike(Context ctx) {
-        //TODO:integration between like and user
+    public void dislike(Context ctx) {
         String username = ctx.basicAuthCredentials().getUsername();
         User currentUser = userService.findByUsername(username);
         String recipeId = ctx.pathParam("id");
-        recipeService.removeLike(currentUser, recipeId);
+
         userService.removeRecipeFromListLike(currentUser, recipeId);
-        ctx.status(HttpStatus.NO_CONTENT);
+        Recipe recipeDisliked = recipeService.removeLike(currentUser, recipeId);
+
+        ctx.json(recipeDisliked).status(HttpStatus.OK);
     }
 
     @Override

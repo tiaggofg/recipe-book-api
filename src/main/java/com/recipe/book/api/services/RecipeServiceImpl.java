@@ -1,9 +1,10 @@
 package com.recipe.book.api.services;
 
-import com.recipe.book.api.model.User;
-import com.recipe.book.api.repositories.RecipeRepository;
+import com.recipe.book.api.exceptions.UserLikedRecipeException;
 import com.recipe.book.api.model.Comment;
 import com.recipe.book.api.model.Recipe;
+import com.recipe.book.api.model.User;
+import com.recipe.book.api.repositories.RecipeRepository;
 
 import java.util.List;
 
@@ -41,13 +42,31 @@ public class RecipeServiceImpl implements RecipeService {
     }
 
     @Override
-    public Recipe addLike(User author, String recipeId) {
-        return recipeRepository.addLike(author, recipeId);
+    public Recipe addLike(User currentUser, String recipeId) {
+        Recipe recipe = recipeRepository.findById(recipeId);
+        boolean recipeContainsLike = recipe.getLikes()
+                .stream()
+                .anyMatch(like -> like.getUserId().equals(currentUser.getId()) && like.getUsername().equals(currentUser.getUsername()));
+
+        if (recipeContainsLike) {
+            throw new UserLikedRecipeException("Usuário id: " + currentUser.getId() + " já curtiu a receita id: " + recipeId + "!");
+        }
+
+        return recipeRepository.addLike(currentUser, recipeId);
     }
 
     @Override
-    public void removeLike(User author, String recipeId) {
-        recipeRepository.removeLike(author, recipeId);
+    public Recipe removeLike(User currentUser, String recipeId) {
+        Recipe recipe = recipeRepository.findById(recipeId);
+        boolean recipeNotContainsLike = recipe.getLikes()
+                .stream()
+                .noneMatch(like -> like.getUserId().equals(currentUser.getId()) && like.getUsername().equals(currentUser.getUsername()));
+
+        if (recipeNotContainsLike) {
+            throw new UserLikedRecipeException("Usuário id: " + currentUser.getId() + " não curtiu a receita id: " + recipeId + "!");
+        }
+
+        return recipeRepository.removeLike(currentUser, recipeId);
     }
 
     @Override

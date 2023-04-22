@@ -101,8 +101,8 @@ public class RecipeApplication {
                     put(recipeController::put);
                     delete(recipeController::delete);
                     path("like", () -> {
-                        post(recipeController::postLike);
-                        delete(recipeController::deleteLike);
+                        post(recipeController::like);
+                        delete(recipeController::dislike);
                     });
                     path("comment", () -> {
                         post(recipeController::postComment);
@@ -113,6 +113,18 @@ public class RecipeApplication {
                     });
                 });
             });
+        });
+
+        app.exception(UserLikedRecipeException.class, (e, ctx) -> {
+            HttpStatus status = HttpStatus.BAD_REQUEST;
+            DefaultError error = new DefaultError(String.valueOf(System.currentTimeMillis()), status.toString(), e.getMessage(), ctx.path());
+            ctx.json(error).status(status);
+        });
+
+        app.exception(UserNotLikeRecipeException.class, (e, ctx) -> {
+            HttpStatus status = HttpStatus.BAD_REQUEST;
+            DefaultError error = new DefaultError(String.valueOf(System.currentTimeMillis()), status.toString(), e.getMessage(), ctx.path());
+            ctx.json(error).status(status);
         });
 
         app.exception(InvalidCredentialsException.class, (e, ctx) -> {
@@ -133,6 +145,7 @@ public class RecipeApplication {
             HttpStatus status = HttpStatus.BAD_REQUEST;
             String errorMessage = "Nenhum conteúdo enviado no request body!";
             DefaultError error = new DefaultError(String.valueOf(System.currentTimeMillis()), status.toString(), errorMessage, ctx.path());
+            ctx.json(error).status(status);
         });
 
         app.exception(UnrecognizedPropertyException.class, (e, ctx) -> {
@@ -144,12 +157,6 @@ public class RecipeApplication {
 
         app.exception(ObjectNotFoundException.class, (e, ctx) -> {
             HttpStatus status = HttpStatus.NOT_FOUND;
-            DefaultError error = new DefaultError(String.valueOf(System.currentTimeMillis()), status.toString(), e.getMessage(), ctx.path());
-            ctx.json(error).status(status);
-        });
-
-        app.exception(ExistsUserIdException.class, (e, ctx) -> {
-            HttpStatus status = HttpStatus.CONFLICT;
             DefaultError error = new DefaultError(String.valueOf(System.currentTimeMillis()), status.toString(), e.getMessage(), ctx.path());
             ctx.json(error).status(status);
         });

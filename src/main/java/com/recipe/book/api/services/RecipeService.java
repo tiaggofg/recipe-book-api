@@ -16,13 +16,13 @@ public interface RecipeService {
 
     Recipe create(Recipe recipe);
 
-    Recipe addLike(User author, String recipeId);
+    Recipe addLike(User currentUser, String recipeId);
+
+    Recipe removeLike(User currentUser, String recipeId);
 
     Recipe addComment(String recipeId, Comment comment);
 
     void delete(String id);
-
-    void removeLike(User author, String recipeId);
 
     void removeComment(String recipeId, String commentId);
 

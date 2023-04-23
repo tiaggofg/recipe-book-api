@@ -33,14 +33,18 @@ public class RecipeApplication {
 
     public static void main(String[] args) {
         Config appConfig = null;
-        try {
-            InputStream fileInputStream = ClassLoader.getSystemResourceAsStream("recipe-book.properties");
-            Properties properties = new Properties();
-            properties.load(fileInputStream);
-            appConfig = new Config(properties);
-        } catch (IOException e) {
-            Log.error("Ocorreu um erro ao ler o arquivo de configuração!", RecipeApplication.class, e);
-            System.exit(0);
+        InputStream fileInputStream = ClassLoader.getSystemResourceAsStream("recipe-book.properties");
+        if (fileInputStream != null) {
+            try {
+                Properties properties = new Properties();
+                properties.load(fileInputStream);
+                appConfig = new Config(properties);
+            } catch (IOException e) {
+                Log.error("Ocorreu um erro ao ler o arquivo de configuração!", RecipeApplication.class, e);
+                System.exit(0);
+            }
+        } else {
+            appConfig = Config.fromEnvs();
         }
 
         MongoClient mongoClient = appConfig.getMongoAtlasClient();

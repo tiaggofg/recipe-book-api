@@ -19,7 +19,6 @@ public class Config extends Properties {
     private int mongoPort;
     private String mongoHost;
     private String mongoDatabase;
-    private String collection;
     private String conectionString;
 
     public Config() {
@@ -30,16 +29,11 @@ public class Config extends Properties {
         mongoPort = Integer.parseInt(properties.getProperty("db.port"));
         mongoHost = properties.getProperty("db.host");
         mongoDatabase = properties.getProperty("db.name");
-        collection = properties.getProperty("db.collection");
         conectionString = properties.getProperty("db.stringConnection");
     }
 
     public int getApplicationPort() {
         return applicationPort;
-    }
-
-    public String getCollection() {
-        return collection;
     }
 
     public String getMongoDatabase() {
@@ -70,5 +64,15 @@ public class Config extends Properties {
                 .build();
 
         return MongoClients.create(mongoClientSettings);
+    }
+
+    public static Config fromEnvs() {
+        Config config = new Config();
+        config.applicationPort = Integer.parseInt(System.getenv("APPLICATION_PORT"));
+        config.conectionString = System.getenv("STRING_CONNECTION");
+        config.mongoDatabase = System.getenv("DATABASE");
+        config.mongoPort = Integer.parseInt(System.getenv("DB_PORT"));
+        config.mongoHost = System.getenv("DB_HOST");
+        return config;
     }
 }

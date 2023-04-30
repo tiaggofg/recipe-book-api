@@ -5,6 +5,7 @@ import java.util.Objects;
 public class Comment {
 
 	private String id;
+	private String authorId;
 	private String comment;
 	
 	public Comment() {
@@ -20,6 +21,14 @@ public class Comment {
 	
 	public void setId(String id) {
 		this.id = id;
+	}
+
+	public String getAuthorId() {
+		return authorId;
+	}
+
+	public void setAuthorId(String authorId) {
+		this.authorId = authorId;
 	}
 	
 	public String getComment() {

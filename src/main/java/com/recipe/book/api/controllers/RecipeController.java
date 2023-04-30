@@ -22,10 +22,10 @@ public interface RecipeController {
 
     void dislike(Context ctx);
 
-    void postComment(Context ctx);
+    void addComment(Context ctx);
 
-    void deleteComment(Context ctx);
+    void removeComment(Context ctx);
 
-    void putComment(Context ctx);
+    void updateComment(Context ctx);
 
 }

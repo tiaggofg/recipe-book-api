@@ -8,6 +8,8 @@ import java.util.List;
 
 public interface RecipeService {
 
+    Recipe findById(String recipeId);
+
     List<Recipe> findByIngredient(String ingredient, String authorId);
 
     List<Recipe> searchInTitleAndDescription(String search, String authorId);
@@ -20,13 +22,13 @@ public interface RecipeService {
 
     Recipe removeLike(User currentUser, String recipeId);
 
-    Recipe addComment(String recipeId, Comment comment);
+    void addComment(String recipeId, Comment comment);
+
+    void removeComment(String recipeId, Comment comment);
 
     void delete(String id);
 
-    void removeComment(String recipeId, String commentId);
-
-    void updateComment(String recipeId, String commentId, Comment comment);
+    void updateComment(String recipeId, Comment currentComment, Comment newComment);
 
     Recipe findUserRecipe(String id, String authorId);
 

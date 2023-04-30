@@ -109,14 +109,20 @@ public class RecipeApplication {
                         delete(recipeController::dislike);
                     });
                     path("comment", () -> {
-                        post(recipeController::postComment);
+                        post(recipeController::addComment);
                         path("{commentId}", () -> {
-                            put(recipeController::putComment);
-                            delete(recipeController::deleteComment);
+                            put(recipeController::updateComment);
+                            delete(recipeController::removeComment);
                         });
                     });
                 });
             });
+        });
+
+        app.exception(CommentException.class, (e, ctx) -> {
+            HttpStatus status = HttpStatus.BAD_REQUEST;
+            DefaultError error = new DefaultError(String.valueOf(System.currentTimeMillis()), status.toString(), e.getMessage(), ctx.path());
+            ctx.json(error).status(status);
         });
 
         app.exception(UserLikedRecipeException.class, (e, ctx) -> {

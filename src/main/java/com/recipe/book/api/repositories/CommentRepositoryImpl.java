@@ -3,10 +3,11 @@ package com.recipe.book.api.repositories;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
+import com.mongodb.client.model.FindOneAndReplaceOptions;
+import com.mongodb.client.model.ReturnDocument;
 import com.recipe.book.api.exceptions.ObjectNotFoundException;
 import com.recipe.book.api.model.Comment;
 import org.bson.conversions.Bson;
-import org.bson.types.ObjectId;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,26 +42,28 @@ public class CommentRepositoryImpl implements CommentRepository {
     @Override
     public Comment update(String id, Comment comment) {
         Bson filter = Filters.eq("_id", id);
-        if (coll.find(filter).first() == null) {
+        FindOneAndReplaceOptions options = new FindOneAndReplaceOptions().returnDocument(ReturnDocument.AFTER);
+        Comment updatedComment = coll.findOneAndReplace(filter, comment, options);
+        if (updatedComment == null) {
             throw new ObjectNotFoundException("Comentário id: " + id + " não encontrado!");
         }
-        return coll.findOneAndReplace(filter, comment);
+        return updatedComment;
     }
 
     @Override
     public Comment create(Comment comment) {
-        var id = new ObjectId().toString();
-        comment.setId(id);
+        //String id = new ObjectId().toString();
+        //comment.setId(id);
         coll.insertOne(comment);
-        return findById(id);
+        return findById(comment.getId());
     }
 
     @Override
     public void delete(String id) {
         Bson filter = Filters.eq("_id", id);
-        if (coll.find(filter).first() == null) {
+        Comment commentDeleted = coll.findOneAndDelete(filter);
+        if (commentDeleted == null) {
             throw new ObjectNotFoundException("Comentário id: " + id + " não encontrado!");
         }
-        coll.deleteOne(filter);
     }
 }

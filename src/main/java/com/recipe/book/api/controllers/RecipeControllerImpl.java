@@ -1,5 +1,6 @@
 package com.recipe.book.api.controllers;
 
+import com.recipe.book.api.exceptions.CommentException;
 import com.recipe.book.api.exceptions.ObjectNotFoundException;
 import com.recipe.book.api.model.Comment;
 import com.recipe.book.api.model.Recipe;
@@ -9,6 +10,7 @@ import com.recipe.book.api.services.RecipeService;
 import com.recipe.book.api.services.UserService;
 import io.javalin.http.Context;
 import io.javalin.http.HttpStatus;
+import org.bson.types.ObjectId;
 
 import java.util.List;
 
@@ -123,35 +125,68 @@ public class RecipeControllerImpl implements RecipeController {
     }
 
     @Override
-    public void postComment(Context ctx) {
+    public void addComment(Context ctx) {
+        String username = ctx.basicAuthCredentials().getUsername();
+        User currentUser = userService.findByUsername(username);
         String recipeId = ctx.pathParam("id");
+
         Comment comment = ctx.bodyAsClass(Comment.class);
+        comment.setAuthorId(currentUser.getId());
+        comment.setId(new ObjectId().toString());
+
+        recipeService.addComment(recipeId, comment);
         Comment commentCreated = commentService.create(comment);
-        try {
-            recipeService.addComment(recipeId, comment);
-        } catch (ObjectNotFoundException e) {
-            commentService.delete(commentCreated.getId());
-            throw new ObjectNotFoundException(e.getMessage());
+
+        ctx.json(commentCreated).status(HttpStatus.CREATED);
+    }
+
+    @Override
+    public void updateComment(Context ctx) {
+        String username = ctx.basicAuthCredentials().getUsername();
+        User currentUser = userService.findByUsername(username);
+        String recipeId = ctx.pathParam("id");
+        String commentId = ctx.pathParam("commentId");
+
+        Comment newComment = ctx.bodyAsClass(Comment.class);
+        Recipe recipe = recipeService.findById(recipeId);
+
+        Comment currentComment = recipe.getComments().stream()
+                .filter(c -> c.getId().equals(commentId))
+                .findFirst()
+                .orElseThrow(() -> new ObjectNotFoundException("Comentário id: " + commentId + " não encontrado!"));
+
+        if (!currentComment.getAuthorId().equals(currentUser.getId())) {
+            throw new CommentException("Comnetário id: " + commentId + " não pertence ao usuário " + currentUser.getUsername());
         }
-        ctx.json(comment).status(HttpStatus.CREATED);
+
+        recipeService.updateComment(recipeId, currentComment, newComment);
+        newComment = commentService.update(commentId, newComment);
+
+        ctx.status(HttpStatus.OK).json(newComment);
     }
 
     @Override
-    public void putComment(Context ctx) {
-        String recipeId = ctx.pathParam("id");
-        String commentId = ctx.pathParam("commentId");
-        Comment comment = ctx.bodyAsClass(Comment.class);
-        recipeService.updateComment(recipeId, commentId, comment);
-        commentService.update(commentId, comment);
-        ctx.status(HttpStatus.NO_CONTENT);
-    }
+    public void removeComment(Context ctx) {
+        String username = ctx.basicAuthCredentials().getUsername();
+        User currentUser = userService.findByUsername(username);
 
-    @Override
-    public void deleteComment(Context ctx) {
         String recipeId = ctx.pathParam("id");
         String commentId = ctx.pathParam("commentId");
-        recipeService.removeComment(recipeId, commentId);
+
+        Recipe recipe = recipeService.findById(recipeId);
+        Comment comment = recipe.getComments()
+                .stream()
+                .filter(c -> c.getId().equals(commentId))
+                .findFirst()
+                .orElseThrow(() -> new ObjectNotFoundException("Comentário id: " + commentId + " não encontrado!"));
+
+        if (!comment.getAuthorId().equals(currentUser.getId()) && !recipe.getAuthorId().equals(currentUser.getId())) {
+            throw new CommentException("O comentário id: " + commentId + " não pertence ao usuário " + currentUser.getUsername());
+        }
+
+        recipeService.removeComment(recipeId, comment);
         commentService.delete(commentId);
+
         ctx.status(HttpStatus.NO_CONTENT);
     }
 }

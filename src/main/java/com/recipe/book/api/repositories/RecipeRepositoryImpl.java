@@ -2,19 +2,18 @@ package com.recipe.book.api.repositories;
 
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
-import com.mongodb.client.model.Filters;
-import com.mongodb.client.model.FindOneAndUpdateOptions;
-import com.mongodb.client.model.ReturnDocument;
-import com.mongodb.client.model.Updates;
+import com.mongodb.client.model.*;
 import com.recipe.book.api.exceptions.ObjectNotFoundException;
 import com.recipe.book.api.model.Comment;
 import com.recipe.book.api.model.Like;
 import com.recipe.book.api.model.Recipe;
 import com.recipe.book.api.model.User;
+import org.bson.Document;
 import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -117,29 +116,30 @@ public class RecipeRepositoryImpl implements RecipeRepository {
     }
 
     @Override
-    public Recipe addComment(String recipeId, Comment comment) {
-        //TODO:implementation integration between comment and user
-        Recipe recipe = findById(recipeId);
-        recipe.getComments().add(comment);
-        return null; //update(recipeId, recipe);
-    }
-
-    @Override
-    public Recipe updateComment(String recipeId, String commentId, Comment comment) {
-        comment.setId(commentId);
-        removeComment(recipeId, commentId);
-        return addComment(recipeId, comment);
-    }
-
-    @Override
-    public void removeComment(String recipeId, String commentId) {
-        //TODO:implementation integration between user and comment
-        Recipe recipe = findById(recipeId);
-        if (!commentExists(recipe, commentId)) {
-            throw new ObjectNotFoundException("Comentário id: " + commentId + " não encontrado!");
+    public void addComment(String recipeId, Comment comment) {
+        FindOneAndUpdateOptions updateOptions = new FindOneAndUpdateOptions().returnDocument(ReturnDocument.AFTER);
+        Bson filter = Filters.eq("_id", recipeId);
+        Bson update = Updates.push("comments", comment);
+        Recipe recipe = coll.findOneAndUpdate(filter, update, updateOptions);
+        if (recipe == null) {
+            throw new ObjectNotFoundException("Não foi possível adicionar o comentário a receita. Receita id: " + recipeId + " não encontrada!");
         }
-        recipe.getComments().removeIf(c -> c.getId().equals(commentId));
-        //update(recipeId, recipe);
+    }
+
+    @Override
+    public void updateComment(String recipeId, Comment currentComment, Comment newComment) {
+        newComment.setId(currentComment.getId());
+        newComment.setAuthorId(currentComment.getAuthorId());
+
+        removeComment(recipeId, currentComment);
+        addComment(recipeId, newComment);
+    }
+
+    @Override
+    public void removeComment(String recipeId, Comment comment) {
+        Bson filter = Filters.eq("_id", recipeId);
+        Bson update = Updates.pull("comments", comment);
+        coll.updateOne(filter, update);
     }
 
     @Override
@@ -160,15 +160,5 @@ public class RecipeRepositoryImpl implements RecipeRepository {
             throw new ObjectNotFoundException("Receita id: " + recipeId + " não encontrada!");
         }
         return recipe;
-    }
-
-    private boolean commentExists(Recipe recipe, String commentId) {
-        List<Comment> comments = recipe.getComments();
-        for (Comment c : comments) {
-            if (c.getId().equals(commentId)) {
-                return true;
-            }
-        }
-        return false;
     }
 }

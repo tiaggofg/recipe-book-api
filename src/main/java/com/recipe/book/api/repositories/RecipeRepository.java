@@ -24,13 +24,13 @@ public interface RecipeRepository {
 
     Recipe removeLike(User currentUser, String recipeId);
 
-    Recipe addComment(String recipeId, Comment comment);
+    void addComment(String recipeId, Comment comment);
 
-    Recipe updateComment(String recipeId, String commentId, Comment comment);
+    void updateComment(String recipeId, Comment currentComment, Comment newComment);
 
     void delete(String id);
 
-    void removeComment(String recipeId, String commentId);
+    void removeComment(String recipeId, Comment comment);
 
     List<Recipe> findAllUserRecipe(String userId);
 }

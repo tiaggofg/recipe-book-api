@@ -17,6 +17,11 @@ public class RecipeServiceImpl implements RecipeService {
     }
 
     @Override
+    public Recipe findById(String recipeId) {
+        return recipeRepository.findById(recipeId);
+    }
+
+    @Override
     public Recipe update(String id, String authorId, Recipe recipe) {
         return recipeRepository.update(id, authorId, recipe);
     }
@@ -70,13 +75,13 @@ public class RecipeServiceImpl implements RecipeService {
     }
 
     @Override
-    public Recipe addComment(String recipeId, Comment comment) {
-        return recipeRepository.addComment(recipeId, comment);
+    public void addComment(String recipeId, Comment comment) {
+        recipeRepository.addComment(recipeId, comment);
     }
 
     @Override
-    public void updateComment(String recipeId, String commentId, Comment comment) {
-        recipeRepository.updateComment(recipeId, commentId, comment);
+    public void updateComment(String recipeId, Comment currentComment, Comment newComment) {
+        recipeRepository.updateComment(recipeId, currentComment, newComment);
     }
 
     @Override
@@ -90,7 +95,7 @@ public class RecipeServiceImpl implements RecipeService {
     }
 
     @Override
-    public void removeComment(String recipeId, String commentId) {
-        recipeRepository.removeComment(recipeId, commentId);
+    public void removeComment(String recipeId, Comment comment) {
+        recipeRepository.removeComment(recipeId, comment);
     }
 }

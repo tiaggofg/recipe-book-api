@@ -15,11 +15,11 @@ import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
 
 public class Config extends Properties {
 
-    private int applicationPort;
-    private int mongoPort;
-    private String mongoHost;
-    private String mongoDatabase;
-    private String conectionString;
+    private static int applicationPort;
+    private static int mongoPort;
+    private static String mongoHost;
+    private static String mongoDatabase;
+    private static String conectionString;
 
     public Config() {
     }
@@ -32,11 +32,43 @@ public class Config extends Properties {
         conectionString = properties.getProperty("db.stringConnection");
     }
 
+    public static void setApplicationPort(int applicationPort) {
+        Config.applicationPort = applicationPort;
+    }
+
+    public static int getMongoPort() {
+        return mongoPort;
+    }
+
+    public static void setMongoPort(int mongoPort) {
+        Config.mongoPort = mongoPort;
+    }
+
+    public static String getMongoHost() {
+        return mongoHost;
+    }
+
+    public static void setMongoHost(String mongoHost) {
+        Config.mongoHost = mongoHost;
+    }
+
+    public static void setMongoDatabase(String mongoDatabase) {
+        Config.mongoDatabase = mongoDatabase;
+    }
+
+    public static String getConectionString() {
+        return conectionString;
+    }
+
+    public static void setConectionString(String conectionString) {
+        Config.conectionString = conectionString;
+    }
+
     public int getApplicationPort() {
         return applicationPort;
     }
 
-    public String getMongoDatabase() {
+    public static String getMongoDatabase() {
         return mongoDatabase;
     }
 
@@ -50,7 +82,7 @@ public class Config extends Properties {
                 .codecRegistry(pojoCodecRegistry).build());
     }
 
-    public MongoClient getMongoAtlasClient() {
+    public static MongoClient getMongoAtlasClient() {
         CodecProvider pojoCodecProvider = PojoCodecProvider.builder().automatic(true).build();
         CodecRegistry pojoCodecRegistry = fromRegistries(MongoClientSettings.getDefaultCodecRegistry(),
                 fromProviders(pojoCodecProvider));
@@ -66,13 +98,11 @@ public class Config extends Properties {
         return MongoClients.create(mongoClientSettings);
     }
 
-    public static Config fromEnvs() {
-        Config config = new Config();
-        config.applicationPort = Integer.parseInt(System.getenv("APPLICATION_PORT"));
-        config.conectionString = System.getenv("STRING_CONNECTION");
-        config.mongoDatabase = System.getenv("DATABASE");
-        config.mongoPort = Integer.parseInt(System.getenv("DB_PORT"));
-        config.mongoHost = System.getenv("DB_HOST");
-        return config;
+    public static void fromEnvs() {
+        Config.applicationPort = Integer.parseInt(System.getenv("APPLICATION_PORT"));
+        Config.conectionString = System.getenv("STRING_CONNECTION");
+        Config.mongoDatabase = System.getenv("DATABASE");
+        Config.mongoPort = Integer.parseInt(System.getenv("DB_PORT"));
+        Config.mongoHost = System.getenv("DB_HOST");
     }
 }

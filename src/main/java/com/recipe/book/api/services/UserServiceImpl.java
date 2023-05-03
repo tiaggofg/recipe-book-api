@@ -7,10 +7,13 @@ import com.recipe.book.api.model.User;
 import com.recipe.book.api.repositories.UserRepository;
 import io.javalin.security.BasicAuthCredentials;
 
+import javax.inject.Inject;
+
 public class UserServiceImpl implements UserService {
 
     private UserRepository repository;
 
+    @Inject
     public UserServiceImpl(UserRepository repository) {
         this.repository = repository;
     }

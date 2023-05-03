@@ -12,6 +12,7 @@ import org.bson.Document;
 import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
 
+import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -23,6 +24,7 @@ public class RecipeRepositoryImpl implements RecipeRepository {
 
     private final MongoCollection<Recipe> coll;
 
+    @Inject
     public RecipeRepositoryImpl(MongoDatabase database) {
         coll = database.getCollection("recipe", Recipe.class);
     }

@@ -2,21 +2,17 @@ package com.recipe.book.api;
 
 import com.fasterxml.jackson.databind.exc.MismatchedInputException;
 import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
 import com.mongodb.MongoSocketOpenException;
-import com.mongodb.client.MongoClient;
-import com.mongodb.client.MongoDatabase;
 import com.recipe.book.api.config.Config;
 import com.recipe.book.api.controllers.RecipeController;
-import com.recipe.book.api.controllers.RecipeControllerImpl;
 import com.recipe.book.api.controllers.UserController;
 import com.recipe.book.api.controllers.UserControllerImpl;
 import com.recipe.book.api.exceptions.*;
 import com.recipe.book.api.log.Log;
-import com.recipe.book.api.repositories.CommentRepositoryImpl;
-import com.recipe.book.api.repositories.RecipeRepositoryImpl;
-import com.recipe.book.api.repositories.UserRepository;
-import com.recipe.book.api.repositories.UserRepositoryImpl;
-import com.recipe.book.api.services.*;
+import com.recipe.book.api.modules.AppModule;
+import com.recipe.book.api.services.UserService;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
 import io.javalin.http.HttpStatus;
@@ -44,19 +40,12 @@ public class RecipeApplication {
                 System.exit(0);
             }
         } else {
-            appConfig = Config.fromEnvs();
+            Config.fromEnvs();
         }
 
-        MongoClient mongoClient = appConfig.getMongoAtlasClient();
-        MongoDatabase mongoDatabase = mongoClient.getDatabase(appConfig.getMongoDatabase());
-
-        UserRepository userRepository = new UserRepositoryImpl(mongoDatabase);
-        UserService userService = new UserServiceImpl(userRepository);
-        UserController userController = new UserControllerImpl(userService);
-
-        CommentService commentService = new CommentServiceImpl(new CommentRepositoryImpl(mongoDatabase));
-        RecipeService recipeService = new RecipeServiceImpl(new RecipeRepositoryImpl(mongoDatabase));
-        RecipeController recipeController = new RecipeControllerImpl(recipeService, userService, commentService);
+        Injector injector = Guice.createInjector(new AppModule());
+        UserController userController = injector.getInstance(UserController.class);
+        RecipeController recipeController = injector.getInstance(RecipeController.class);
 
         Javalin app = Javalin.create(config -> {
             config.http.defaultContentType = "JSON";
@@ -73,7 +62,7 @@ public class RecipeApplication {
             path("/authenticate", () -> {
                 post(ctx -> {
                     BasicAuthCredentials authCredentials = ctx.basicAuthCredentials();
-                    if (userService.isValidCredentials(authCredentials)) {
+                    if (injector.getInstance(UserService.class).isValidCredentials(authCredentials)) {
                         ctx.status(HttpStatus.OK);
                     } else {
                         throw new InvalidCredentialsException("Usuário ou senha inválidos");

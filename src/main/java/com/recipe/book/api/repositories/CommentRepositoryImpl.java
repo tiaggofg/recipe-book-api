@@ -9,6 +9,7 @@ import com.recipe.book.api.exceptions.ObjectNotFoundException;
 import com.recipe.book.api.model.Comment;
 import org.bson.conversions.Bson;
 
+import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,6 +17,7 @@ public class CommentRepositoryImpl implements CommentRepository {
 
     private final MongoCollection<Comment> coll;
 
+    @Inject
     public CommentRepositoryImpl(MongoDatabase database) {
         coll = database.getCollection("comment", Comment.class);
     }

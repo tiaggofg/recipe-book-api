@@ -3,12 +3,14 @@ package com.recipe.book.api.services;
 import com.recipe.book.api.repositories.CommentRepository;
 import com.recipe.book.api.model.Comment;
 
+import javax.inject.Inject;
 import java.util.List;
 
 public class CommentServiceImpl implements CommentService {
 
-    private CommentRepository commentRepository;
+    private final CommentRepository commentRepository;
 
+    @Inject
     public CommentServiceImpl(CommentRepository commentRepository) {
         this.commentRepository = commentRepository;
     }

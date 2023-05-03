@@ -6,12 +6,14 @@ import com.recipe.book.api.model.Recipe;
 import com.recipe.book.api.model.User;
 import com.recipe.book.api.repositories.RecipeRepository;
 
+import javax.inject.Inject;
 import java.util.List;
 
 public class RecipeServiceImpl implements RecipeService {
 
     private final RecipeRepository recipeRepository;
 
+    @Inject
     public RecipeServiceImpl(RecipeRepository recipeRepository) {
         this.recipeRepository = recipeRepository;
     }

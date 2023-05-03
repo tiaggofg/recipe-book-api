@@ -12,6 +12,7 @@ import io.javalin.http.Context;
 import io.javalin.http.HttpStatus;
 import org.bson.types.ObjectId;
 
+import javax.inject.Inject;
 import java.util.List;
 
 public class RecipeControllerImpl implements RecipeController {
@@ -20,6 +21,7 @@ public class RecipeControllerImpl implements RecipeController {
     private final UserService userService;
     private final CommentService commentService;
 
+    @Inject
     public RecipeControllerImpl(RecipeService recipeService, UserService userService, CommentService commentService) {
         this.recipeService = recipeService;
         this.commentService = commentService;

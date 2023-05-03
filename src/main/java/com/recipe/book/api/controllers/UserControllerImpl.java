@@ -10,12 +10,14 @@ import io.javalin.http.HttpStatus;
 import io.javalin.security.BasicAuthCredentials;
 import io.javalin.security.RouteRole;
 
+import javax.inject.Inject;
 import java.util.Set;
 
 public class UserControllerImpl implements UserController {
 
     private final UserService service;
 
+    @Inject
     public UserControllerImpl(UserService service) {
         this.service = service;
     }

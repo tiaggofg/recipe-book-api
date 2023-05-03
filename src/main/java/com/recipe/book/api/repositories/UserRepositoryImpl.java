@@ -8,10 +8,13 @@ import com.recipe.book.api.model.User;
 import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
 
+import javax.inject.Inject;
+
 public class UserRepositoryImpl implements UserRepository {
 
     private final MongoCollection<User> coll;
 
+    @Inject
     public UserRepositoryImpl(MongoDatabase database) {
         coll = database.getCollection("user", User.class);
     }

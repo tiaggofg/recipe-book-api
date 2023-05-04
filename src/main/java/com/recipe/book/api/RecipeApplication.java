@@ -19,29 +19,12 @@ import io.javalin.http.HttpStatus;
 import io.javalin.plugin.bundled.CorsPluginConfig;
 import io.javalin.security.BasicAuthCredentials;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Properties;
-
 import static io.javalin.apibuilder.ApiBuilder.*;
 
 public class RecipeApplication {
 
     public static void main(String[] args) {
-        Config appConfig = null;
-        InputStream fileInputStream = ClassLoader.getSystemResourceAsStream("recipe-book.properties");
-        if (fileInputStream != null) {
-            try {
-                Properties properties = new Properties();
-                properties.load(fileInputStream);
-                appConfig = new Config(properties);
-            } catch (IOException e) {
-                Log.error("Ocorreu um erro ao ler o arquivo de configuração!", RecipeApplication.class, e);
-                System.exit(0);
-            }
-        } else {
-            Config.fromEnvs();
-        }
+        Config.load();
 
         Injector injector = Guice.createInjector(new AppModule());
         UserController userController = injector.getInstance(UserController.class);
@@ -53,7 +36,7 @@ public class RecipeApplication {
             config.plugins.enableCors(cors -> {
                 cors.add(CorsPluginConfig::anyHost);
             });
-        }).start(appConfig.getApplicationPort());
+        }).start(Config.getApplicationPort());
 
         app.routes(() -> {
             path("/", () -> {

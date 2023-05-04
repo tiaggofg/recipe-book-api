@@ -29,7 +29,7 @@ public class AppModule extends AbstractModule {
     }
 
     @Provides
-    static MongoDatabase provideDatabase() {
+    protected static MongoDatabase provideDatabase() {
         MongoClient mongoClient = Config.getMongoAtlasClient();
         return mongoClient.getDatabase(Config.getMongoDatabase());
     }

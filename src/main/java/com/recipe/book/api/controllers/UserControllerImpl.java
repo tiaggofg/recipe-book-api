@@ -4,15 +4,14 @@ import com.recipe.book.api.exceptions.InvalidCredentialsException;
 import com.recipe.book.api.model.User;
 import com.recipe.book.api.services.UserService;
 import io.javalin.http.Context;
-import io.javalin.http.Handler;
 import io.javalin.http.HandlerType;
 import io.javalin.http.HttpStatus;
 import io.javalin.security.BasicAuthCredentials;
-import io.javalin.security.RouteRole;
 
 import javax.inject.Inject;
-import java.util.Set;
+import javax.inject.Singleton;
 
+@Singleton
 public class UserControllerImpl implements UserController {
 
     private final UserService service;
@@ -23,14 +22,11 @@ public class UserControllerImpl implements UserController {
     }
 
     @Override
-    public void authenticate(Handler handler, Context ctx, Set<? extends RouteRole> routeRoles) throws Exception {
-        BasicAuthCredentials authCredentials = ctx.basicAuthCredentials();
-        if ((ctx.path().equals("/authenticate") || ctx.path().equals("/user")) && ctx.method() == HandlerType.POST) {
-            handler.handle(ctx);
-        } else if (service.isValidCredentials(authCredentials)) {
-            handler.handle(ctx);
-        } else {
-            throw new InvalidCredentialsException("Usuário ou senha inválidos!");
+    public void authenticate(Context ctx) {
+        if (!(ctx.path().equals("/user") && ctx.method() == HandlerType.POST)) {
+            BasicAuthCredentials authCredentials = ctx.basicAuthCredentials();
+            if (authCredentials == null || !service.isValidCredentials(authCredentials))
+                throw new InvalidCredentialsException("Usuário ou senha inválidos!");
         }
     }
 

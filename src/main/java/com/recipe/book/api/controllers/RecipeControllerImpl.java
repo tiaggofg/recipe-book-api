@@ -13,8 +13,10 @@ import io.javalin.http.HttpStatus;
 import org.bson.types.ObjectId;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
 import java.util.List;
 
+@Singleton
 public class RecipeControllerImpl implements RecipeController {
 
     private final RecipeService recipeService;

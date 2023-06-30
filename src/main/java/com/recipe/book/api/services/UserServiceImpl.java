@@ -1,6 +1,7 @@
 package com.recipe.book.api.services;
 
 import com.recipe.book.api.exceptions.InvalidCredentialsException;
+import com.recipe.book.api.exceptions.ObjectNotFoundException;
 import com.recipe.book.api.exceptions.UserLikedRecipeException;
 import com.recipe.book.api.exceptions.UserNotLikeRecipeException;
 import com.recipe.book.api.model.User;
@@ -20,7 +21,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User findUser(String userId) {
-        return repository.findUser(userId);
+        User user = repository.findUser(userId);
+        if (user == null) {
+            throw new ObjectNotFoundException("User not found!");
+        }
+        return user;
     }
 
     @Override

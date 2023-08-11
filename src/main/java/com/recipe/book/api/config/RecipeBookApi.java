@@ -7,6 +7,7 @@ import javax.inject.Singleton;
 import java.util.Set;
 
 @Singleton
+@SuppressWarnings("rawtypes")
 public class RecipeBookApi {
 
     private final Set<Routing> routes;

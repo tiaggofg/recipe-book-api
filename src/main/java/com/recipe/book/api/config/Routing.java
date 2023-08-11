@@ -8,7 +8,9 @@ import com.recipe.book.api.exceptions.*;
 import com.recipe.book.api.log.Log;
 import io.javalin.Javalin;
 import io.javalin.http.HttpStatus;
+import lombok.Getter;
 
+@Getter
 public abstract class Routing<T> {
 
     private final Javalin app;
@@ -18,14 +20,6 @@ public abstract class Routing<T> {
         this.app = app;
         this.controller = controller;
         addExceptions();
-    }
-
-    public Javalin getApp() {
-        return app;
-    }
-
-    public T getController() {
-        return controller;
     }
 
     public abstract void bindRoutes();

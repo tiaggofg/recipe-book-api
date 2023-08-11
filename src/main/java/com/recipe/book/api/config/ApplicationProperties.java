@@ -2,6 +2,8 @@ package com.recipe.book.api.config;
 
 import com.recipe.book.api.log.Log;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
@@ -23,10 +25,11 @@ public class ApplicationProperties {
     }
 
     private static void load() {
-        InputStream inputStream = ClassLoader.getSystemResourceAsStream("recipe-book.properties");
-        if (inputStream != null) {
+        try {
+            InputStream inputStream = new FileInputStream("/etc/secrets/recipe-book.properties");
             ApplicationProperties.loadFromInputStream(inputStream);
-        } else {
+        } catch (FileNotFoundException e) {
+            Log.info("Not possible reading properties file. Trying to read properties from environments variables!", ApplicationProperties.class);
             ApplicationProperties.loadFromEnvironmentVariables();
         }
         Log.info("Arquivo de configurações lido com sucesso!", ApplicationProperties.class);

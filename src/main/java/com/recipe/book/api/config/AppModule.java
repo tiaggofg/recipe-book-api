@@ -12,6 +12,7 @@ import io.javalin.plugin.bundled.CorsPluginConfig;
 
 import javax.inject.Singleton;
 
+@SuppressWarnings("rawtypes")
 public class AppModule extends AbstractModule {
 
     @Override

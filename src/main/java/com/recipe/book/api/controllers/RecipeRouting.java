@@ -18,29 +18,32 @@ public class RecipeRouting extends Routing<RecipeController> {
 
     @Override
     public void bindRoutes() {
-        getApp().routes(() -> {
+        Javalin app = getApp();
+        RecipeController controller = getController();
+
+        app.routes(() -> {
             path("recipe", () -> {
-                get(getController()::get);
-                post(getController()::post);
+                get(controller::get);
+                post(controller::post);
                 path("ingredient", () -> {
-                    get(getController()::getByIngredient);
+                    get(controller::getByIngredient);
                 });
                 path("search", () -> {
-                    get(getController()::getBySearch);
+                    get(controller::getBySearch);
                 });
                 path("{id}", () -> {
-                    get(getController()::getById);
-                    put(getController()::put);
-                    delete(getController()::delete);
+                    get(controller::getById);
+                    put(controller::put);
+                    delete(controller::delete);
                     path("like", () -> {
-                        post(getController()::like);
-                        delete(getController()::dislike);
+                        post(controller::like);
+                        delete(controller::dislike);
                     });
                     path("comment", () -> {
-                        post(getController()::addComment);
+                        post(controller::addComment);
                         path("{commentId}", () -> {
-                            put(getController()::updateComment);
-                            delete(getController()::removeComment);
+                            put(controller::updateComment);
+                            delete(controller::removeComment);
                         });
                     });
                 });

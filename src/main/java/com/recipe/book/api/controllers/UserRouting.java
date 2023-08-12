@@ -18,18 +18,21 @@ public class UserRouting extends Routing<UserController> {
 
     @Override
     public void bindRoutes() {
-        getApp().before(getController()::authenticate);
+        Javalin app = getApp();
+        UserController controller = getController();
 
-        getApp().routes(() -> {
+        app.before(controller::authenticate);
+
+        app.routes(() -> {
             path("/user", () -> {
-                post(getController()::postUser);
+                post(controller::postUser);
                 path("/{userId}", () -> {
-                    get(getController()::getUserById);
+                    get(controller::getUserById);
                 });
                 path("/{userName}", () -> {
-                    get(getController()::getUserByName);
-                    put(getController()::putUserByName);
-                    delete(getController()::deleteUserByName);
+                    get(controller::getUserByName);
+                    put(controller::putUserByName);
+                    delete(controller::deleteUserByName);
                 });
             });
         });

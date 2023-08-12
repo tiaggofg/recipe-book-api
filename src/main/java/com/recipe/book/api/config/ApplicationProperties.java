@@ -17,22 +17,22 @@ public class ApplicationProperties {
 
     public static String getProperty(String key) {
         if (applicationProperties == null) {
-            Log.warn("As propriedades da aplicação não foram iniciadas!", ApplicationProperties.class);
-            Log.info("Carregando as propriedades da aplicação", ApplicationProperties.class);
+            Log.error("As propriedades da aplicação não foram iniciadas!", ApplicationProperties.class);
             ApplicationProperties.load();
         }
         return applicationProperties.getProperty(key);
     }
 
-    private static void load() {
+    protected static void load() {
+        Log.info("Iniciando propriedades da aplicação...", ApplicationProperties.class);
         try {
             InputStream inputStream = new FileInputStream("/etc/secrets/recipe-book.properties");
             ApplicationProperties.loadFromInputStream(inputStream);
         } catch (FileNotFoundException e) {
-            Log.info("Not possible reading properties file. Trying to read properties from environments variables!", ApplicationProperties.class);
-            ApplicationProperties.loadFromEnvironmentVariables();
+            Log.error("Não foi possível ler o arquivo de propriedades!", ApplicationProperties.class, e);
+            System.exit(1);
         }
-        Log.info("Arquivo de configurações lido com sucesso!", ApplicationProperties.class);
+        Log.info("Propriedades da aplicação iniciadas com sucesso!", ApplicationProperties.class);
     }
 
     private static void loadFromInputStream(InputStream inputStream) {
@@ -41,17 +41,8 @@ public class ApplicationProperties {
             properties.load(inputStream);
             applicationProperties = properties;
         } catch (IOException e) {
-            Log.error("Ocorreu um erro ao ler o arquivo de configuração!", ApplicationProperties.class, e);
-            System.exit(0);
-        }
-    }
-
-    private static void loadFromEnvironmentVariables() {
-        try {
-            //TODO:created a properties object and add the following attributes
-        } catch (NumberFormatException e) {
-            Log.error("Ocorreu um erro ao ler o arquivo de configuração!", ApplicationProperties.class, e);
-            System.exit(0);
+            Log.error("Ocorreu um erro ao carregar as propriedades da aplicação!", ApplicationProperties.class, e);
+            System.exit(1);
         }
     }
 }

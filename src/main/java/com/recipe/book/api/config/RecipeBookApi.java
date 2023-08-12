@@ -22,6 +22,7 @@ public class RecipeBookApi {
     }
 
     public static void start() {
+        ApplicationProperties.load();
         Guice.createInjector(new AppModule())
                 .getInstance(RecipeBookApi.class)
                 .boot();

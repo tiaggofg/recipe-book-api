@@ -22,6 +22,9 @@ public class RecipeRouting extends Routing<RecipeController> {
         RecipeController controller = getController();
 
         app.routes(() -> {
+            path("/check", () -> {
+                get(ctx -> ctx.status(200));
+            });
             path("recipe", () -> {
                 get(controller::get);
                 post(controller::post);

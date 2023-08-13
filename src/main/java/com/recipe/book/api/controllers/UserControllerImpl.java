@@ -23,7 +23,7 @@ public class UserControllerImpl implements UserController {
 
     @Override
     public void authenticate(Context ctx) {
-        if (!(ctx.path().equals("/user") && ctx.method() == HandlerType.POST)) {
+        if (!(ctx.path().equals("/user") && ctx.method() == HandlerType.POST) && !(ctx.path().equals("/check") && ctx.method() == HandlerType.GET)) {
             BasicAuthCredentials authCredentials = ctx.basicAuthCredentials();
             if (authCredentials == null || !service.isValidCredentials(authCredentials))
                 throw new InvalidCredentialsException("Usuário ou senha inválidos!");

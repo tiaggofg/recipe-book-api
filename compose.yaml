@@ -1,0 +1,12 @@
+services:
+  recipe-book-api:
+    image: "recipe-book-api"
+    container_name: recipe-book-api
+    volumes:
+      - /etc/secrets/recipe-book.properties:/etc/secrets/recipe-book.properties
+    ports:
+      - "9595:5555"
+    build:
+      target: prod
+      context: .
+      dockerfile: Dockerfile

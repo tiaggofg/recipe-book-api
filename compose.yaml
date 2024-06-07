@@ -3,7 +3,7 @@ services:
     image: "recipe-book-api"
     container_name: recipe-book-api
     volumes:
-      - /etc/secrets/recipe-book.properties:/etc/secrets/recipe-book.properties
+      - /etc/secrets/:/etc/secrets/
     ports:
       - "9595:5555"
     build:

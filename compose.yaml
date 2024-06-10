@@ -10,3 +10,4 @@ services:
       target: prod
       context: .
       dockerfile: Dockerfile
+    restart: always

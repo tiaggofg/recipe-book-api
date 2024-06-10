@@ -22,7 +22,7 @@ public class RecipeRouting extends Routing<RecipeController> {
         RecipeController controller = getController();
 
         app.routes(() -> {
-            path("/check", () -> {
+            path("/status", () -> {
                 get(ctx -> ctx.status(200));
             });
             path("recipe", () -> {

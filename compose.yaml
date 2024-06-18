@@ -4,6 +4,7 @@ services:
     container_name: recipe-book-api
     volumes:
       - /etc/secrets/:/etc/secrets/
+      - /etc/public/:/app/public
     ports:
       - "9595:5555"
     build:

@@ -8,9 +8,11 @@ import com.recipe.book.api.controllers.*;
 import com.recipe.book.api.repositories.*;
 import com.recipe.book.api.services.*;
 import io.javalin.Javalin;
+import io.javalin.http.staticfiles.Location;
 import io.javalin.plugin.bundled.CorsPluginConfig;
 
 import javax.inject.Singleton;
+import java.io.File;
 
 @SuppressWarnings("rawtypes")
 public class AppModule extends AbstractModule {
@@ -40,6 +42,7 @@ public class AppModule extends AbstractModule {
     public static Javalin provideJavalin() {
         int port = Integer.parseInt(ApplicationProperties.getProperty("app.port"));
         return Javalin.create(config -> {
+            config.staticFiles.add(new File("").getAbsolutePath() + "/public", Location.EXTERNAL);
             config.http.defaultContentType = "application/json";
             config.plugins.enableCors(cors -> {
                 cors.add(CorsPluginConfig::anyHost);
